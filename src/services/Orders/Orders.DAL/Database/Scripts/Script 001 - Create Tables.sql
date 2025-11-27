@@ -8,7 +8,7 @@ CREATE TABLE orders (
     order_id UUID PRIMARY KEY,
     customer_id UUID NOT NULL,
     order_date TIMESTAMP DEFAULT NOW(),
-    total_amount DECIMAL(18, 2) NOT NULL
+    total_price DECIMAL(18, 2) NOT NULL
     status VARCHAR(50) DEFAULT 'New',
     created_at TIMESTAMP DEFAULT NOW(),
     CONSTRAINT fk_order_customers FOREIGN KEY (customer_id) REFERENCES customers(customer_id)

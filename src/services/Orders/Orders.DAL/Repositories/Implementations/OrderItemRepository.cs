@@ -31,28 +31,15 @@ namespace Orders.DAL.Repositories.Implementations
             return await Connection.QuerySingleOrDefaultAsync<OrderItem?>(cmd);
         }
 
-        public async Task<List<OrderItem>> GetOrderItemsAsync(int pageSize, int pageNumber, CancellationToken cancellationToken)
+        public async Task<List<OrderItem>> GetOrderItemsAsync(Guid orderId, int pageSize, int pageNumber, CancellationToken cancellationToken)
         {
             ThrowIfConnectionOrTransactionIsUninitialized();
 
             var skip = (pageNumber - 1) * pageSize;
 
             var cmd = new CommandDefinition(
-                "SELECT * FROM order_items OFFSET @Skip ROWS FETCH NEXT @Take ROWS ONLY",
+                "SELECT * FROM order_items WHERE order_id = @Id OFFSET @Skip ROWS FETCH NEXT @Take ROWS ONLY",
                 new { Skip = skip, Take = pageSize },
-                cancellationToken: cancellationToken,
-                transaction: Transaction);
-
-            return (await Connection.QueryAsync<OrderItem>(cmd)).ToList();
-        }
-
-        public async Task<List<OrderItem>?> GetOrderItemsByOrderIdAsync(Guid orderId, CancellationToken cancellationToken)
-        {
-            ThrowIfConnectionOrTransactionIsUninitialized();
-
-            var cmd = new CommandDefinition(
-                "SELECT * FROM order_items WHERE order_id = @Id",
-                new { Id = orderId },
                 cancellationToken: cancellationToken,
                 transaction: Transaction);
 
@@ -66,10 +53,12 @@ namespace Orders.DAL.Repositories.Implementations
             var cmd = new CommandDefinition("create_order_item",
                 new
                 {
-                    OrderItemId = orderItem.OrderItemId,
-                    OrderId = orderItem.OrderId,
-                    ProductId = orderItem.ProductId,
-                    Quantity = orderItem.Quantity
+                    p_order_item_id = orderItem.OrderItemId,
+                    p_order_id = orderItem.OrderId,
+                    p_product_id = orderItem.ProductId,
+                    p_product_name = orderItem.ProductName,
+                    p_unit_price = orderItem.UnitPrice,
+                    p_quantity = orderItem.Quantity
                 },
                 commandType: CommandType.StoredProcedure,
                 cancellationToken: cancellationToken,
@@ -107,7 +96,7 @@ namespace Orders.DAL.Repositories.Implementations
             return rowsDeleted == 1; 
         }
 
-        public async Task<long> CountOrderItemsAsync(Guid orderId, CancellationToken cancellationToken)
+        public async Task<long> CountOrderItemsInOrderAsync(Guid orderId, CancellationToken cancellationToken)
         {
             ThrowIfConnectionOrTransactionIsUninitialized();
 

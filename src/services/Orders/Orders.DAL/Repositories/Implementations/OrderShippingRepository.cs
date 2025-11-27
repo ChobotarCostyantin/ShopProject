@@ -51,11 +51,11 @@ namespace Orders.DAL.Repositories.Implementations
             var cmd = new CommandDefinition("create_order_shipping",
                 new
                 {
-                    ShippingId = orderShipping.ShippingId,
-                    OrderId = orderShipping.OrderId,
-                    AdressLine = orderShipping.AdressLine,
-                    City = orderShipping.City,
-                    PostalCode = orderShipping.PostalCode
+                    p_shipping_id = orderShipping.ShippingId,
+                    p_order_id = orderShipping.OrderId,
+                    p_adress_line = orderShipping.AdressLine,
+                    p_city = orderShipping.City,
+                    p_postal_code = orderShipping.PostalCode
                 },
                 commandType: CommandType.StoredProcedure,
                 cancellationToken: cancellationToken,

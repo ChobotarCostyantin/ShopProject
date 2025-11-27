@@ -7,18 +7,18 @@ INSERT INTO customer (customer_id, full_name, email) VALUES
 ('33333333-3333-3333-3333-333333333333', 'Ivan Petrov', 'ivan.petrov@test.com');
 
 -- 2. Insert Orders
-INSERT INTO order (order_id, customer_id, order_date, total_amount, status) VALUES
+INSERT INTO order (order_id, customer_id, delivery_date, total_price, status, created_at) VALUES
 -- Order 1: Клієнт 1 (Oleksandr)
-('aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa', '11111111-1111-1111-1111-111111111111', NOW() - INTERVAL '2 hours', 55000.00, 'New'),
+('aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa', '11111111-1111-1111-1111-111111111111', NOW() + INTERVAL '1 day', 55000.00, 'New', NOW()),
 
 -- Order 2: Клієнт 1 (Oleksandr)
-('bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb', '11111111-1111-1111-1111-111111111111', NOW() - INTERVAL '20 days', 12000.00, 'Shipped'),
+('bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb', '11111111-1111-1111-1111-111111111111', NOW() - INTERVAL '4 days', 12000.00, 'Shipped', NOW() - INTERVAL '8 days'),
 
 -- Order 3: Клієнт 2 (Maria)
-('cccccccc-cccc-cccc-cccc-cccccccccccc', '22222222-2222-2222-2222-222222222222', NOW() - INTERVAL '1 day', 100000.00, 'Paid'),
+('cccccccc-cccc-cccc-cccc-cccccccccccc', '22222222-2222-2222-2222-222222222222', NOW() + INTERVAL '10 days', 100000.00, 'Paid', NOW()),
 
 -- Order 4: Клієнт 3 (Ivan)
-('dddddddd-dddd-dddd-dddd-dddddddddddd', '33333333-3333-3333-3333-333333333333', NOW() - INTERVAL '5 hours', 28000.00, 'Cancelled');
+('dddddddd-dddd-dddd-dddd-dddddddddddd', '33333333-3333-3333-3333-333333333333', NOW() + INTERVAL '3 days', 28000.00, 'Cancelled', NOW() - INTERVAL '3 days');
 
 -- 3. Insert Order Shipping
 INSERT INTO order_shipping (shipping_id, order_id, address_line, city, postal_code) VALUES

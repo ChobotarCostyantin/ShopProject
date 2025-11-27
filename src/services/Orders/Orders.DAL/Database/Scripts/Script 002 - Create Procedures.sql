@@ -2,16 +2,16 @@
 CREATE OR REPLACE PROCEDURE create_order(
     IN P_order_id UUID,
     IN p_customer_id UUID,
-    IN p_order_date TIMESTAMP,
-    IN p_total_amount DECIMAL,
+    IN p_delivery_date TIMESTAMP,
+    IN p_total_price DECIMAL,
     IN p_status VARCHAR,
     IN p_created_at TIMESTAMP
 )
 LANGUAGE plpgsql
 AS $$
 BEGIN
-    INSERT INTO order (order_id, customer_id, order_date, total_amount, status, created_at)
-    VALUES (p_order_id, p_customer_id, p_order_date, p_total_amount, p_status, p_created_at);
+    INSERT INTO order (order_id, customer_id, delivery_date, total_price, status, created_at)
+    VALUES (p_order_id, p_customer_id, p_delivery_date, p_total_price, p_status, p_created_at);
 END;
 $$;
 

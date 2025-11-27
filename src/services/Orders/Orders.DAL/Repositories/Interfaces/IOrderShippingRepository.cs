@@ -11,7 +11,7 @@ namespace Orders.DAL.Repositories.Interfaces
         Task<OrderShipping?> GetOrderShippingAsync(Guid orderId, CancellationToken cancellationToken);
         Task<OrderShipping> CreateOrderShippingAsync(OrderShipping orderShipping, CancellationToken cancellationToken);
         Task<OrderShipping> UpdateOrderShippingAsync(Guid orderShippingId, OrderShipping orderShipping, CancellationToken cancellationToken);
-        Task<bool> DeleteOrderShippingAsync(OrderShipping orderShipping, CancellationToken cancellationToken);
+        Task<bool> DeleteOrderShippingAsync(Guid orderShippingId, CancellationToken cancellationToken);
         Task<OrderShipping?> GetOrderShippingByOrderIdAsync(Guid orderId, CancellationToken cancellationToken);
     }
 }

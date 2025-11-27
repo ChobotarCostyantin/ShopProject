@@ -9,5 +9,6 @@ namespace Orders.DAL.Repositories.Interfaces
         Task<Customer> CreateCustomerAsync(Customer customer, CancellationToken cancellationToken);
         Task<Customer> UpdateCustomerAsync(Guid customerId, Customer customer, CancellationToken cancellationToken);
         Task<bool> DeleteCustomerAsync(Guid customerId, CancellationToken cancellationToken);
+        Task<long> CountAllAsync(CancellationToken cancellationToken);
     }
 }
