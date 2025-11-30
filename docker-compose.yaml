@@ -10,7 +10,7 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - orders-db.volume:/var/lib/postgresql
+      - orders-db.volume:/var/lib/postgresql/data
 
   orders.api:
     image: orders.api
@@ -22,7 +22,7 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_HTTP_PORTS=8080
-      - ConnctionStrings__Default=Host=orders-db;Port=5432;Database=ordersDb;Username=admin;Password=12345;
+      - ConnectionStrings__ordersDb=Host=orders-db;Port=5432;Database=ordersDb;Username=admin;Password=12345;
     depends_on:
       - orders-db
     ports:

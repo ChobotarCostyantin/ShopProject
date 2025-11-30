@@ -114,7 +114,7 @@ namespace Orders.BLL.Features.OrderShipping.Services.Implementations
                     return Result<OrderShippingDto>.NotFound(key: shippingId, entityName: nameof(Domain.Models.OrderShipping));
                 }
 
-                orderShipping.AdressLine = request.AddressLine;
+                orderShipping.AddressLine = request.AddressLine;
                 orderShipping.City = request.City;
                 orderShipping.PostalCode = request.PostalCode;
 

@@ -10,7 +10,7 @@ namespace Orders.Domain.Models
         public Guid ShippingId { get; set; }
         public Guid OrderId { get; set; }
         public Order Order { get; set; } = null!;
-        public required string AdressLine { get; set; }
+        public required string AddressLine { get; set; }
         public required string City { get; set; }
         public required string PostalCode { get; set; }
     }

@@ -33,9 +33,17 @@ namespace Orders.API.Controllers
         [HttpGet("{customerId:guid}/orders")]
         [ProducesResponseType(typeof (PaginationResult<OrderDto>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> GetAsync([FromRoute] Guid customerId, [FromQuery] GetOrdersByCustomerIdRequest request, CancellationToken cancellationToken)
+        public async Task<IActionResult> GetByCustomerIdAsync([FromRoute] Guid customerId, [FromQuery] GetOrdersByCustomerIdRequest request, CancellationToken cancellationToken)
         {
             return (await _orderService.GetOrdersByCustomerIdAsync(customerId, request, cancellationToken)).ToApiResponse();
+        }
+
+        [HttpGet] 
+        [ProducesResponseType(typeof (PaginationResult<OrderDto>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> GetAsync([FromQuery] GetOrdersRequest request, CancellationToken cancellationToken)
+        {
+            return (await _orderService.GetOrdersAsync(request, cancellationToken)).ToApiResponse();
         }
 
         [HttpGet("{orderId:guid}")] 

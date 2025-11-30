@@ -1,13 +1,13 @@
 var builder = DistributedApplication.CreateBuilder(args);
 
-var orderDb = builder.AddPostgres("ordersDb")
+var ordersDb = builder.AddPostgres("orders-db")
     .WithDataVolume()
     .WithEnvironment("POSTGRES_HOST_AUTH_METHOD", "trust")
-    .AddDatabase("orderDb");
+    .AddDatabase("ordersDb");
 
 var orderApi = builder.AddProject<Projects.Orders_API>("orders-api")
-    .WithReference(orderDb)
+    .WithReference(ordersDb)
     .WithHttpEndpoint(port: 5001, name: "orders-http")
-    .WaitFor(orderDb);
+    .WaitFor(ordersDb);
 
 builder.Build().Run();

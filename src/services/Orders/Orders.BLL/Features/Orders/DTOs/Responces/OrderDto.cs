@@ -10,7 +10,7 @@ namespace Orders.BLL.Features.Orders.DTOs.Responces
     public record OrderDto(
         Guid OrderId,
         Guid CustomerId,
-        DateTimeOffset DeliveryDate,
+        DateTime DeliveryDate,
         decimal TotalPrice,
         Status Status,
         DateTimeOffset CreatedAt,

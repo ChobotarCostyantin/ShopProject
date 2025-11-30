@@ -12,6 +12,6 @@ namespace Orders.BLL.Features.Orders.DTOs.Requests
         [Required(ErrorMessage = "Customer id is required")] Guid CustomerId,
 
         [NotInPast]
-        [Required(ErrorMessage = "Delivery date is required")] DateTimeOffset DeliveryDate
+        [Required(ErrorMessage = "Delivery date is required")] DateTime DeliveryDate
     );
 }

@@ -19,33 +19,15 @@ namespace Orders.DAL.Repositories.Implementations
             Transaction = transaction;
         }
 
-        public async Task<Order?> GetOrderAsync(Guid orderId, CancellationToken cancellationToken)
+        private async Task<List<Order>> QueryOrdersAsync(string sql, object parameters, CancellationToken cancellationToken)
         {
             ThrowIfConnectionOrTransactionIsUninitialized();
 
-            const string sql = """
-                               SELECT
-                                   -- Order
-                                   o.order_id AS OrderId,
-                                   o.customer_id AS CustomerId,
-                                   o.delivery_date AS DeliveryDate,
-                                   o.total_price AS TotalPrice,
-                                   o.status AS Status,
-                                   o.created_at AS CreatedAt,
-
-                                   -- Order Item
-                                   oi.order_item_id AS OrderItemId,
-                                   oi.order_id AS OrderId,
-                                   oi.quantity AS Quantity
-                               FROM orders o
-                               LEFT JOIN order_items oi ON o.order_id = oi.order_id
-                               WHERE o.order_id = @Id
-                               """;
-
             var orderDictionary = new Dictionary<Guid, Order>();
 
-            var cmd = new CommandDefinition(sql,
-                new { Id = orderId },
+            var cmd = new CommandDefinition(
+                sql,
+                parameters,
                 cancellationToken: cancellationToken,
                 transaction: Transaction);
 
@@ -56,36 +38,101 @@ namespace Orders.DAL.Repositories.Implementations
                     if (!orderDictionary.TryGetValue(order.OrderId, out var currentOrder))
                     {
                         currentOrder = order;
-                        order.OrderItems = [];
+                        currentOrder.OrderItems = new List<OrderItem>();
                         orderDictionary.Add(order.OrderId, currentOrder);
                     }
 
-                    if (orderItem is not null)
+                    if (orderItem != null && orderItem.OrderItemId != Guid.Empty)
                     {
                         currentOrder.OrderItems.Add(orderItem);
                     }
 
                     return currentOrder;
                 },
-                splitOn: "order_item_id");
+                splitOn: "OrderItemId");
 
-            return orderDictionary.Values.FirstOrDefault();
+            return orderDictionary.Values.ToList();
+        }
+
+
+        public async Task<Order?> GetOrderAsync(Guid orderId, CancellationToken cancellationToken)
+        {
+            const string sql = """
+                        SELECT
+                            o.order_id AS OrderId,
+                            o.customer_id AS CustomerId,
+                            o.delivery_date AS DeliveryDate,
+                            o.total_price AS TotalPrice,
+                            o.status AS Status,
+                            o.created_at AS CreatedAt,
+
+                            oi.order_item_id AS OrderItemId,
+                            oi.order_id AS OrderId,
+                            oi.product_id AS ProductId,
+                            oi.quantity AS Quantity
+                        FROM orders o
+                        LEFT JOIN order_items oi ON o.order_id = oi.order_id
+                        WHERE o.order_id = @Id
+                        """;
+
+            var list = await QueryOrdersAsync(sql, new { Id = orderId }, cancellationToken);
+            return list.FirstOrDefault();
+        }
+
+        public async Task<List<Order>> GetOrdersAsync(int pageSize, int pageNumber, CancellationToken cancellationToken)
+        {
+            var skip = (pageNumber - 1) * pageSize;
+
+            const string sql = """
+                        SELECT 
+                            o.order_id AS OrderId, o.customer_id AS CustomerId, o.delivery_date AS DeliveryDate,
+                            o.total_price AS TotalPrice, o.status AS Status, o.created_at AS CreatedAt,
+
+                            oi.order_item_id AS OrderItemId, oi.order_id AS OrderId, oi.product_id AS ProductId,
+                            oi.quantity AS Quantity
+                        FROM orders o
+                        INNER JOIN (
+                            SELECT order_id
+                            FROM orders
+                            ORDER BY created_at DESC
+                            OFFSET @Skip ROWS FETCH NEXT @Take ROWS ONLY
+                        ) AS p ON p.order_id = o.order_id
+                        LEFT JOIN order_items oi ON o.order_id = oi.order_id
+                        ORDER BY o.created_at DESC, oi.order_item_id
+                        """;
+
+            return await QueryOrdersAsync(sql, new { Skip = skip, Take = pageSize }, cancellationToken);
         }
 
         public async Task<List<Order>> GetOrdersByCustomerIdAsync(Guid customerId, int pageSize, int pageNumber, CancellationToken cancellationToken)
         {
-            ThrowIfConnectionOrTransactionIsUninitialized();
-
             var skip = (pageNumber - 1) * pageSize;
 
-            var cmd = new CommandDefinition(
-                "SELECT * FROM orders WHERE customer_id = @Id OFFSET @Skip ROWS FETCH NEXT @Take ROWS ONLY",
-                new { Id = customerId, Skip = skip, Take = pageSize },
-                cancellationToken: cancellationToken,
-                transaction: Transaction);
+            const string sql = """
+                        SELECT 
+                            o.order_id AS OrderId, o.customer_id AS CustomerId, o.delivery_date AS DeliveryDate,
+                            o.total_price AS TotalPrice, o.status AS Status, o.created_at AS CreatedAt,
 
-            return (await Connection.QueryAsync<Order>(cmd)).ToList();
+                            oi.order_item_id AS OrderItemId, oi.order_id AS OrderId, oi.product_id AS ProductId,
+                            oi.quantity AS Quantity
+                        FROM orders o
+                        INNER JOIN (
+                            SELECT order_id
+                            FROM orders
+                            WHERE customer_id = @CustomerId
+                            ORDER BY created_at DESC
+                            OFFSET @Skip ROWS FETCH NEXT @Take ROWS ONLY
+                        ) AS p ON p.order_id = o.order_id
+                        LEFT JOIN order_items oi ON o.order_id = oi.order_id
+                        ORDER BY o.created_at DESC, oi.order_item_id
+                        """;
+
+            return await QueryOrdersAsync(
+                sql,
+                new { CustomerId = customerId, Skip = skip, Take = pageSize },
+                cancellationToken);
         }
+
 
         public async Task<Order> CreateOrderAsync(Order order, CancellationToken cancellationToken)
         {
@@ -115,11 +162,13 @@ namespace Orders.DAL.Repositories.Implementations
 
             var cmd = new CommandDefinition(
                 "UPDATE orders SET total_price = @TotalPrice, delivery_date = @DeliveryDate, status = @Status WHERE order_id = @Id",
-                new {
-                    Id = orderId, 
-                    TotalPrice = order.TotalPrice, 
-                    DeliveryDate = order.DeliveryDate, 
-                    Status = order.Status.ToString() },
+                new
+                {
+                    Id = orderId,
+                    TotalPrice = order.TotalPrice,
+                    DeliveryDate = order.DeliveryDate,
+                    Status = order.Status.ToString()
+                },
                 cancellationToken: cancellationToken,
                 transaction: Transaction
             );
@@ -151,6 +200,19 @@ namespace Orders.DAL.Repositories.Implementations
                 new { Id = customerId },
                 cancellationToken: cancellationToken,
                 transaction: Transaction);
+
+            return await Connection.ExecuteScalarAsync<long>(cmd);
+        }
+
+        public async Task<long> CountAllOrdersAsync(CancellationToken cancellationToken)
+        {
+            ThrowIfConnectionOrTransactionIsUninitialized();
+
+            var cmd = new CommandDefinition(
+                "SELECT COUNT(*) FROM orders",
+                cancellationToken: cancellationToken,
+                transaction: Transaction
+            );
 
             return await Connection.ExecuteScalarAsync<long>(cmd);
         }

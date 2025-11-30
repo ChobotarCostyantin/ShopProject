@@ -7,7 +7,7 @@ CREATE TABLE IF NOT EXISTS customers (
 CREATE TABLE IF NOT EXISTS orders (
     order_id UUID PRIMARY KEY,
     customer_id UUID NOT NULL,
-    delivery_date TIMESTAMP DEFAULT NOW(),
+    delivery_date TIMESTAMP WITHOUT TIME ZONE DEFAULT NOW(),
     total_price DECIMAL(18, 2) NOT NULL,
     status VARCHAR(50) DEFAULT 'New',
     created_at TIMESTAMP DEFAULT NOW(),

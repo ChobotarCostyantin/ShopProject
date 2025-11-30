@@ -39,7 +39,7 @@ namespace Orders.DAL.Repositories.Implementations
 
             var cmd = new CommandDefinition(
                 "SELECT * FROM order_items WHERE order_id = @Id OFFSET @Skip ROWS FETCH NEXT @Take ROWS ONLY",
-                new { Skip = skip, Take = pageSize },
+                new { Skip = skip, Take = pageSize, Id = orderId },
                 cancellationToken: cancellationToken,
                 transaction: Transaction);
 

@@ -23,7 +23,7 @@ namespace Orders.DAL.Repositories.Implementations
             ThrowIfConnectionOrTransactionIsUninitialized();
 
             var cmd = new CommandDefinition(
-                "SELECT * FROM order_shippings WHERE shipping_id = @Id",
+                "SELECT * FROM order_shipping WHERE shipping_id = @Id",
                 new { Id = shippingId },
                 cancellationToken: cancellationToken,
                 transaction: Transaction);
@@ -36,7 +36,7 @@ namespace Orders.DAL.Repositories.Implementations
             ThrowIfConnectionOrTransactionIsUninitialized();
 
             var cmd = new CommandDefinition(
-                "SELECT * FROM order_shippings WHERE order_id = @Id",
+                "SELECT * FROM order_shipping WHERE order_id = @Id",
                 new { Id = orderId },
                 cancellationToken: cancellationToken,
                 transaction: Transaction);
@@ -53,7 +53,7 @@ namespace Orders.DAL.Repositories.Implementations
                 {
                     p_shipping_id = orderShipping.ShippingId,
                     p_order_id = orderShipping.OrderId,
-                    p_adress_line = orderShipping.AdressLine,
+                    p_adress_line = orderShipping.AddressLine,
                     p_city = orderShipping.City,
                     p_postal_code = orderShipping.PostalCode
                 },
@@ -70,8 +70,8 @@ namespace Orders.DAL.Repositories.Implementations
             ThrowIfConnectionOrTransactionIsUninitialized();
 
             var cmd = new CommandDefinition(
-                "UPDATE order_shippings SET adress_line = @AdressLine, city = @City, postal_code = @PostalCode WHERE shipping_id = @Id",
-                new { Id = shippingId, AdressLine = orderShipping.AdressLine, City = orderShipping.City, PostalCode = orderShipping.PostalCode },
+                "UPDATE order_shipping SET address_line = @AddressLine, city = @City, postal_code = @PostalCode WHERE shipping_id = @Id",
+                new { Id = shippingId, AddressLine = orderShipping.AddressLine, City = orderShipping.City, PostalCode = orderShipping.PostalCode },
                 cancellationToken: cancellationToken,
                 transaction: Transaction);
 
@@ -84,7 +84,7 @@ namespace Orders.DAL.Repositories.Implementations
             ThrowIfConnectionOrTransactionIsUninitialized();
 
             var cmd = new CommandDefinition(
-                "DELETE FROM order_shippings WHERE shipping_id = @Id",
+                "DELETE FROM order_shipping WHERE shipping_id = @Id",
                 new { Id = shippingId },
                 cancellationToken: cancellationToken,
                 transaction: Transaction);

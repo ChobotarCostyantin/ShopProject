@@ -13,10 +13,10 @@ namespace Shared.ValidationAttributes
 
         protected override ValidationResult? IsValid(object? value, ValidationContext validationContext)
         {
-            if (value is not DateTimeOffset dto)
+            if (value is not DateTime dto)
                 return ValidationResult.Success;
 
-            return dto < DateTimeOffset.UtcNow
+            return dto < DateTime.UtcNow
                 ? new ValidationResult(FormatErrorMessage(validationContext.DisplayName))
                 : ValidationResult.Success;
         }

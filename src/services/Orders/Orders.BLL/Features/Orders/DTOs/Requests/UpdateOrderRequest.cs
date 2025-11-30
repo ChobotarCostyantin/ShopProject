@@ -8,7 +8,7 @@ using Orders.Domain.Enums;
 namespace Orders.BLL.Features.Orders.DTOs.Requests
 {
     public record UpdateOrderRequest(
-        [Required(ErrorMessage = "Delivery date is required")] DateTimeOffset DeliveryDate,
+        [Required(ErrorMessage = "Delivery date is required")] DateTime DeliveryDate,
         [Required(ErrorMessage = "Status is required")] Status Status
     );
 }

@@ -24,6 +24,8 @@ builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
+await Task.Delay(TimeSpan.FromSeconds(3));
+
 app.MapDefaultEndpoints();
 app.UseExceptionHandler();
 

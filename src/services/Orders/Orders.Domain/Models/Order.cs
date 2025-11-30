@@ -10,7 +10,7 @@ namespace Orders.Domain.Models
     {
         public Guid OrderId { get; set; }
         public Guid CustomerId { get; set; }
-        public DateTimeOffset DeliveryDate { get; set; }
+        public DateTime DeliveryDate { get; set; }
         public required decimal TotalPrice { get; set; }
         public Status Status { get; set; }
         public DateTimeOffset CreatedAt { get; set; }

@@ -9,7 +9,7 @@ INSERT INTO customers (customer_id, full_name, email) VALUES
 -- 2. Insert Orders
 INSERT INTO orders (order_id, customer_id, delivery_date, total_price, status, created_at) VALUES
 -- Order 1: Клієнт 1 (Oleksandr)
-('aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa', '11111111-1111-1111-1111-111111111111', NOW() + INTERVAL '1 day', 55000, 'New', NOW()),
+('aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa', '11111111-1111-1111-1111-111111111111', NOW(), 55000, 'New', NOW()),
 
 -- Order 2: Клієнт 1 (Oleksandr)
 ('bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb', '11111111-1111-1111-1111-111111111111', NOW() - INTERVAL '4 days', 12000, 'Shipped', NOW() - INTERVAL '8 days'),

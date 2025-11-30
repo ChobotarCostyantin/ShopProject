@@ -14,6 +14,8 @@ namespace Orders.DAL.Repositories.Interfaces
         Task<Order> UpdateOrderAsync(Guid orderId, Order order, CancellationToken cancellationToken);
         Task<bool> DeleteOrderAsync(Guid orderId, CancellationToken cancellationToken);
         Task<long> CountAllOrdersByCustomerIdAsync(Guid customerId, CancellationToken cancellationToken);
+        Task<long> CountAllOrdersAsync(CancellationToken cancellationToken);
         Task<List<Order>> GetOrdersByCustomerIdAsync(Guid customerId, int pageSize, int pageNumber, CancellationToken cancellationToken);
+        Task<List<Order>> GetOrdersAsync(int pageSize, int pageNumber, CancellationToken cancellationToken);
     }
 }

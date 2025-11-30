@@ -2,7 +2,7 @@
 CREATE OR REPLACE PROCEDURE create_order(
     IN P_order_id UUID,
     IN p_customer_id UUID,
-    IN p_delivery_date TIMESTAMP,
+    IN p_delivery_date TIMESTAMP WITHOUT TIME ZONE,
     IN p_total_price DECIMAL,
     IN p_status VARCHAR,
     IN p_created_at TIMESTAMP
