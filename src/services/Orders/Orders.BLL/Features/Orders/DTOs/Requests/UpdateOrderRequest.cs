@@ -5,7 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Orders.Domain.Enums;
 
-namespace Orders.BLL.Features.Order.DTOs.Requests
+namespace Orders.BLL.Features.Orders.DTOs.Requests
 {
     public record UpdateOrderRequest(
         [Required(ErrorMessage = "Delivery date is required")] DateTimeOffset DeliveryDate,

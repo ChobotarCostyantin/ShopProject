@@ -11,7 +11,7 @@ namespace Orders.DAL.Repositories.Implementations
 {
     public class CustomerRepository : RepositoryBase, ICustomerRepository
     {
-        public CustomerRepository(DbConnection connection, DbTransaction transaction)
+        public CustomerRepository(DbConnection? connection = null, DbTransaction? transaction = null)
         {
             Connection = connection;
             Transaction = transaction;

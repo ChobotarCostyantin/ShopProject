@@ -34,15 +34,13 @@ CREATE OR REPLACE PROCEDURE create_order_item(
     IN p_order_item_id UUID,
     IN p_order_id UUID,
     IN p_product_id UUID,
-    IN p_product_name VARCHAR,
-    IN p_unit_price DECIMAL,
     IN p_quantity INT
 )
 LANGUAGE plpgsql
 AS $$
 BEGIN
-    INSERT INTO order_item (order_item_id, order_id, product_id, product_name, unit_price, quantity)
-    VALUES (p_order_item_id, p_order_id, p_product_id, p_product_name, p_unit_price, p_quantity);
+    INSERT INTO order_item (order_item_id, order_id, product_id, quantity)
+    VALUES (p_order_item_id, p_order_id, p_product_id, p_quantity);
 END;
 $$;
 

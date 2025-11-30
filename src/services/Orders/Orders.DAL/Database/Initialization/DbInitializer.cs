@@ -10,7 +10,7 @@ namespace Orders.DAL.Database.Initialization
     {
         public static Task MigrateDatabase(this WebApplication app)
         {
-            var dbConnection = app.Configuration.GetConnectionString("orderDb");
+            var dbConnection = app.Configuration.GetConnectionString("ordersDb");
 
             if (string.IsNullOrWhiteSpace(dbConnection))
             {

@@ -1,0 +1,20 @@
+<Project Sdk="Aspire.AppHost.Sdk/13.0.1">
+
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <TargetFramework>net9.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <UserSecretsId>ec5b655e-d897-45e2-8e3d-b221de16a964</UserSecretsId>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\Orders\Orders.API\Orders.API.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Aspire.Hosting.MongoDB" Version="13.0.0" />
+        <PackageReference Include="Aspire.Hosting.PostgreSQL" Version="13.0.0" />
+    </ItemGroup>
+
+</Project>

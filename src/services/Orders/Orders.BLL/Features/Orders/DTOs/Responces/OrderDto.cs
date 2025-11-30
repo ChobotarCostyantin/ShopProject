@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Orders.BLL.Features.OrderItems.DTOs.Responces;
 using Orders.Domain.Enums;
 
-namespace Orders.BLL.Features.Order.DTOs.Responces
+namespace Orders.BLL.Features.Orders.DTOs.Responces
 {
     public record OrderDto(
         Guid OrderId,

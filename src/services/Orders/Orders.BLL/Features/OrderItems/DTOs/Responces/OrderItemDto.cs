@@ -9,8 +9,6 @@ namespace Orders.BLL.Features.OrderItems.DTOs.Responces
         Guid OrderItemId,
         Guid OrderId,
         Guid ProductId,
-        string ProductName,
-        decimal UnitPrice,
         int Quantity
     );
 }

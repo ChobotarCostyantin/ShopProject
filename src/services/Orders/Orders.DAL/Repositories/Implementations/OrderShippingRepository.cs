@@ -12,7 +12,7 @@ namespace Orders.DAL.Repositories.Implementations
 {
     public class OrderShippingRepository : RepositoryBase, IOrderShippingRepository
     {
-        public OrderShippingRepository(DbConnection connection, DbTransaction transaction)
+        public OrderShippingRepository(DbConnection? connection = null, DbTransaction? transaction = null)
         {
             Connection = connection;
             Transaction = transaction;

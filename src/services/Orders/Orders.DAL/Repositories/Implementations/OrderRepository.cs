@@ -13,7 +13,7 @@ namespace Orders.DAL.Repositories.Implementations
 {
     public class OrderRepository : RepositoryBase, IOrderRepository
     {
-        public OrderRepository(DbConnection connection, DbTransaction transaction)
+        public OrderRepository(DbConnection? connection = null, DbTransaction? transaction = null)
         {
             Connection = connection;
             Transaction = transaction;
@@ -44,6 +44,7 @@ namespace Orders.DAL.Repositories.Implementations
                                LEFT JOIN order_items oi ON o.order_id = oi.order_id
                                WHERE o.order_id = @Id
                                """;
+
             var orderDictionary = new Dictionary<Guid, Order>();
 
             var cmd = new CommandDefinition(sql,
@@ -74,32 +75,19 @@ namespace Orders.DAL.Repositories.Implementations
             return orderDictionary.Values.FirstOrDefault();
         }
 
-        public async Task<List<Order>> GetOrdersAsync(int pageSize, int pageNumber, CancellationToken cancellationToken)
+        public async Task<List<Order>> GetOrdersByCustomerIdAsync(Guid customerId, int pageSize, int pageNumber, CancellationToken cancellationToken)
         {
             ThrowIfConnectionOrTransactionIsUninitialized();
 
             var skip = (pageNumber - 1) * pageSize;
 
             var cmd = new CommandDefinition(
-                "SELECT * FROM orders OFFSET @Skip ROWS FETCH NEXT @Take ROWS ONLY",
-                new { Skip = skip, Take = pageSize },
+                "SELECT * FROM orders WHERE customer_id = @Id OFFSET @Skip ROWS FETCH NEXT @Take ROWS ONLY",
+                new { Id = customerId, Skip = skip, Take = pageSize },
                 cancellationToken: cancellationToken,
                 transaction: Transaction);
 
             return (await Connection.QueryAsync<Order>(cmd)).ToList();
-        }
-
-        public async Task<Order?> GetOrderByCustomerIdAsync(Guid customerId, CancellationToken cancellationToken)
-        {
-            ThrowIfConnectionOrTransactionIsUninitialized();
-
-            var cmd = new CommandDefinition(
-                "SELECT * FROM orders WHERE customer_id = @Id",
-                new { Id = customerId },
-                cancellationToken: cancellationToken,
-                transaction: Transaction);
-
-            return await Connection.QuerySingleOrDefaultAsync<Order?>(cmd);
         }
 
         public async Task<Order> CreateOrderAsync(Order order, CancellationToken cancellationToken)
@@ -157,12 +145,13 @@ namespace Orders.DAL.Repositories.Implementations
             return rowsDeleted == 1;
         }
 
-        public async Task<long> CountAllAsync(CancellationToken cancellationToken)
+        public async Task<long> CountAllOrdersByCustomerIdAsync(Guid customerId, CancellationToken cancellationToken)
         {
             ThrowIfConnectionOrTransactionIsUninitialized();
 
             var cmd = new CommandDefinition(
-                "SELECT COUNT(*) FROM orders",
+                "SELECT COUNT(*) FROM orders WHERE order_id = @Id",
+                new { Id = customerId },
                 cancellationToken: cancellationToken,
                 transaction: Transaction);
 

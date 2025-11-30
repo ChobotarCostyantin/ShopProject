@@ -21,7 +21,7 @@ namespace Orders.DAL
             Dapper.DefaultTypeMap.MatchNamesWithUnderscores = true;
 
             services.AddScoped<IDatabaseConnectionAccessor, NpgsqlConnectionAccessor>(_ => new NpgsqlConnectionAccessor(
-                configuration.GetConnectionString("orderDb")
+                configuration.GetConnectionString("ordersDb")
                 ?? throw new ItemInConfigurationNotFoundException(IDatabaseConnectionAccessor.DatabaseConnectionConfigurationKey)));
 
             services.AddScoped<ICustomerRepository, CustomerRepository>();

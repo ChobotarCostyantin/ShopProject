@@ -12,7 +12,7 @@ namespace Orders.DAL.Repositories.Implementations
 {
     public class OrderItemRepository : RepositoryBase, IOrderItemRepository
     {
-        public OrderItemRepository(DbConnection connection, DbTransaction transaction)
+        public OrderItemRepository(DbConnection? connection = null, DbTransaction? transaction = null)
         {
             Connection = connection;
             Transaction = transaction;
@@ -56,8 +56,6 @@ namespace Orders.DAL.Repositories.Implementations
                     p_order_item_id = orderItem.OrderItemId,
                     p_order_id = orderItem.OrderId,
                     p_product_id = orderItem.ProductId,
-                    p_product_name = orderItem.ProductName,
-                    p_unit_price = orderItem.UnitPrice,
                     p_quantity = orderItem.Quantity
                 },
                 commandType: CommandType.StoredProcedure,
@@ -96,7 +94,7 @@ namespace Orders.DAL.Repositories.Implementations
             return rowsDeleted == 1; 
         }
 
-        public async Task<long> CountOrderItemsInOrderAsync(Guid orderId, CancellationToken cancellationToken)
+        public async Task<long> CountAllInOrderAsync(Guid orderId, CancellationToken cancellationToken)
         {
             ThrowIfConnectionOrTransactionIsUninitialized();
 

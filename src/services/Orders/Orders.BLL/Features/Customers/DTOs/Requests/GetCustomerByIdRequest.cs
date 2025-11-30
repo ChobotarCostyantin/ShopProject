@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 namespace Orders.BLL.Features.Customers.DTOs.Requests
 {
     public record GetCustomerByIdRequest(
-        [Required(ErrorMessage = "Customer id is required")]
-        Guid CustomerId
+        [Required(ErrorMessage = "CustomerId is required")] Guid CustomerId
     );
 }

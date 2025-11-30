@@ -28,8 +28,6 @@ CREATE TABLE order_items (
     order_item_id UUID PRIMARY KEY,
     order_id UUID NOT NULL,
     product_id UUID NOT NULL,
-    product_name VARCHAR(150) NOT NULL,
-    unit_price DECIMAL(18, 2) NOT NULL,
     quantity INT NOT NULL
     CONSTRAINT fk_items_order FOREIGN KEY (order_id) REFERENCES orders(order_id)
     CONSTRAINT ck_quantity CHECK (quantity > 0)

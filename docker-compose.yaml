@@ -1,0 +1,29 @@
+services:
+  orders-db:
+    image: postgres
+    container_name: orders-db
+    restart: always
+    environment:
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=12345
+      - POSTGRES_DB=ordersDb
+    ports:
+      - "5432:5432"
+    volumes:
+      - orders-db.volume:/var/lib/postgresql/data
+
+  orders.api:
+    image: orders.api
+    build:
+      context: .
+      dockerfile: src/services/Orders/Orders.API/Dockerfile
+    container_name: orders.api
+    restart: always
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_HTTP_PORTS=8080
+      - ConnctionStrings__Default=Host=localhost;Port=5432;Database=ordersDb;Username=admin;Password=12345;
+    depends_on:
+      - orders-db
+    ports:
+      - "16000:8080"

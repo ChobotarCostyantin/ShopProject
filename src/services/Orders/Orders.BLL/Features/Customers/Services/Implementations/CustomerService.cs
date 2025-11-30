@@ -37,7 +37,7 @@ namespace Orders.BLL.Features.Customers.Services.Implementations
 
                 await _unitOfWork.CommitTransactionAsync();
 
-                return Result<CustomerDto>.Created($"/api.customers.{customer.CustomerId}", _mapper.Map<CustomerDto>(customer));
+                return Result<CustomerDto>.Created($"/api/customers/{customer.CustomerId}", _mapper.Map<CustomerDto>(customer));
             }
             catch (DbException e)
             {
@@ -54,15 +54,12 @@ namespace Orders.BLL.Features.Customers.Services.Implementations
                 await _unitOfWork.BeginTransactionAsync();
 
                 var customer = await _unitOfWork.CustomerRepository.GetCustomerAsync(request.CustomerId, cancellationToken);
-                if (customer is null)
-                {
-                    await _unitOfWork.CommitTransactionAsync();
-                    return Result<CustomerDto>.NotFound(key: request.CustomerId, entityName: nameof(Customer));
-                }
 
                 await _unitOfWork.CommitTransactionAsync();
 
-                return Result<CustomerDto>.Ok(_mapper.Map<CustomerDto>(customer));
+                return customer is null
+                    ? Result<CustomerDto>.NotFound(key: request.CustomerId, entityName: nameof(Customer))
+                    : Result<CustomerDto>.Ok(_mapper.Map<CustomerDto>(customer));
             }
             catch (DbException e)
             {
@@ -140,7 +137,7 @@ namespace Orders.BLL.Features.Customers.Services.Implementations
                 await _unitOfWork.CommitTransactionAsync();
 
                 return Result<PaginationResult<CustomerDto>>.Ok(new PaginationResult<CustomerDto>(
-                    customers.Select(_mapper.Map<CustomerDto>).ToArray(),
+                    customers.Select(x => _mapper.Map<CustomerDto>(x)).ToArray(),
                     totalCount,
                     request.PageNumber,
                     Math.Ceiling((decimal)totalCount / request.PageSize),

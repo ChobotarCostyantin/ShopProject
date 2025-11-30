@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Orders.BLL.Features.Customers.DTOs.Requests;
 using Orders.BLL.Features.Customers.DTOs.Responses;
-using Orders.Domain.Models;
 
 namespace Orders.BLL.Features.Customers.Mappers
 {
@@ -13,9 +12,9 @@ namespace Orders.BLL.Features.Customers.Mappers
     {
         public CustomerProfile()
         {
-            CreateMap<CreateCustomerRequest, Customer>();
+            CreateMap<CreateCustomerRequest, Domain.Models.Customer>();
 
-            CreateMap<Customer, CustomerDto>();
+            CreateMap<Domain.Models.Customer, CustomerDto>();
         }
     }
 }
