@@ -10,7 +10,7 @@ CREATE OR REPLACE PROCEDURE create_order(
 LANGUAGE plpgsql
 AS $$
 BEGIN
-    INSERT INTO order (order_id, customer_id, delivery_date, total_price, status, created_at)
+    INSERT INTO orders (order_id, customer_id, delivery_date, total_price, status, created_at)
     VALUES (p_order_id, p_customer_id, p_delivery_date, p_total_price, p_status, p_created_at);
 END;
 $$;
@@ -24,7 +24,7 @@ CREATE OR REPLACE PROCEDURE create_customer(
 LANGUAGE plpgsql
 AS $$
 BEGIN
-    INSERT INTO customer (customer_id, full_name, email)
+    INSERT INTO customers (customer_id, full_name, email)
     VALUES (p_customer_id, p_full_name, p_email);
 END;
 $$;
@@ -39,14 +39,14 @@ CREATE OR REPLACE PROCEDURE create_order_item(
 LANGUAGE plpgsql
 AS $$
 BEGIN
-    INSERT INTO order_item (order_item_id, order_id, product_id, quantity)
+    INSERT INTO order_items (order_item_id, order_id, product_id, quantity)
     VALUES (p_order_item_id, p_order_id, p_product_id, p_quantity);
 END;
 $$;
 
 -- 4. CREATE: Транзакційне створення доставки замовлення
 CREATE OR REPLACE PROCEDURE create_order_shipping(
-    IN p_shipping_id UUID
+    IN p_shipping_id UUID,
     IN p_order_id UUID,
     IN p_address_line VARCHAR,
     IN p_city VARCHAR,

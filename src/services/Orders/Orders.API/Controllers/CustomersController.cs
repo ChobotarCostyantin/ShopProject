@@ -9,7 +9,8 @@ using Orders.BLL.Features.Customers.Services.interfaces;
 using Shared.DTOs;
 
 namespace Orders.API.Controllers
-{
+{   
+    [Route("api/[controller]")]
     public class CustomersController : BaseApiController
     {
         private readonly ICustomerService _customerService;

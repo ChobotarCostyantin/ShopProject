@@ -15,7 +15,7 @@ COPY ["src/shared/Shared/Shared.csproj", "src/shared/Shared/"]
 
 RUN dotnet restore "src/services/Orders/Orders.API/Orders.API.csproj"
 COPY . .
-WORKDIR "/src/services/Orders/Orders.API"
+WORKDIR "/src/src/services/Orders/Orders.API"
 RUN dotnet build "./Orders.API.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
 FROM build AS publish

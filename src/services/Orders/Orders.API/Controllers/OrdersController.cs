@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Orders.BLL.Features.Customers.Services.interfaces;
 using Orders.BLL.Features.OrderItems.DTOs.Requests;
 using Orders.BLL.Features.OrderItems.DTOs.Responces;
 using Orders.BLL.Features.OrderItems.Services.Interfaces;
@@ -17,6 +16,7 @@ using Shared.DTOs;
 
 namespace Orders.API.Controllers
 {
+    [Route("api/[controller]")]
     public class OrdersController : BaseApiController
     {
         private readonly IOrderService _orderService;

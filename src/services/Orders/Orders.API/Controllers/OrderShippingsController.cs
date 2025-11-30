@@ -9,6 +9,7 @@ using Orders.BLL.Features.OrderShipping.Services.Interfaces;
 
 namespace Orders.API.Controllers
 {
+    [Route("api/[controller]")]
     public class OrderShippingsController : BaseApiController
     {
         private readonly IOrderShippingService _orderShippingService;

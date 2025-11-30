@@ -36,10 +36,7 @@ namespace Orders.DAL.Repositories.Implementations
                                    -- Order Item
                                    oi.order_item_id AS OrderItemId,
                                    oi.order_id AS OrderId,
-                                   oi.product_id AS ProductId,
-                                   oi.product_name AS ProductName,
-                                   oi.unit_price AS UnitPrice,
-                                   oi.quantity AS Quantity,
+                                   oi.quantity AS Quantity
                                FROM orders o
                                LEFT JOIN order_items oi ON o.order_id = oi.order_id
                                WHERE o.order_id = @Id
@@ -150,7 +147,7 @@ namespace Orders.DAL.Repositories.Implementations
             ThrowIfConnectionOrTransactionIsUninitialized();
 
             var cmd = new CommandDefinition(
-                "SELECT COUNT(*) FROM orders WHERE order_id = @Id",
+                "SELECT COUNT(*) FROM orders WHERE customer_id = @Id",
                 new { Id = customerId },
                 cancellationToken: cancellationToken,
                 transaction: Transaction);

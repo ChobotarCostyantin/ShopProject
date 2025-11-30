@@ -9,6 +9,7 @@ using Orders.BLL.Features.OrderItems.Services.Interfaces;
 
 namespace Orders.API.Controllers
 {
+    [Route("api/[controller]")]
     public class OrderItemsController : BaseApiController
     {
         private readonly IOrderItemService _orderItemService;
