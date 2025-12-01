@@ -11,7 +11,7 @@ CREATE TABLE IF NOT EXISTS orders (
     total_price DECIMAL(18, 2) NOT NULL,
     status VARCHAR(50) DEFAULT 'New',
     created_at TIMESTAMP DEFAULT NOW(),
-    CONSTRAINT fk_order_customers FOREIGN KEY (customer_id) REFERENCES customers(customer_id),
+    CONSTRAINT fk_order_customers FOREIGN KEY (customer_id) REFERENCES customers(customer_id) ON DELETE CASCADE,
     CONSTRAINT ck_total_price CHECK (total_price >= 0)
 );
 
@@ -29,7 +29,7 @@ CREATE TABLE IF NOT EXISTS order_items (
     order_id UUID NOT NULL,
     product_id UUID NOT NULL,
     quantity INT NOT NULL,
-    CONSTRAINT fk_items_order FOREIGN KEY (order_id) REFERENCES orders(order_id),
+    CONSTRAINT fk_items_order FOREIGN KEY (order_id) REFERENCES orders(order_id) ON DELETE CASCADE,
     CONSTRAINT ck_quantity CHECK (quantity > 0)
 );
 
