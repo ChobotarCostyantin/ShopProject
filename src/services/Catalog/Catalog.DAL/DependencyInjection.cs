@@ -11,6 +11,7 @@ using Catalog.DAL.UOW.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Npgsql;
 using Shared.Exceptions;
 
 namespace Catalog.DAL
@@ -73,6 +74,12 @@ namespace Catalog.DAL
             services.AddScoped<ITagRepository, TagRepository>();
 
             services.AddScoped<IUnitOfWork, UnitOfWork>();
+
+            services.AddOpenTelemetry()
+            .WithTracing(tracing =>
+            {
+                tracing.AddNpgsql();
+            });
 
             return services;
         }

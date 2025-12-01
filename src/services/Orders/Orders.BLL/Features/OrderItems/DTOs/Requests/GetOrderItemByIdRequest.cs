@@ -6,6 +6,5 @@ using System.Threading.Tasks;
 
 namespace Orders.BLL.Features.OrderItems.DTOs.Requests
 {
-    public record GetOrderItemByIdRequest(
-        [Required(ErrorMessage = "OrderItemId is required")] Guid OrderItemId);
+    public record GetOrderItemByIdRequest(Guid OrderItemId);
 }

@@ -6,5 +6,5 @@ using Shared.DTOs;
 
 namespace Orders.BLL.Features.Orders.DTOs.Requests
 {
-    public record GetOrdersByCustomerIdRequest : PaginationRequest;
+    public record GetOrdersByCustomerIdRequest() : PaginationRequest;
 }

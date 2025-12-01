@@ -4,6 +4,7 @@ using System.Data.Common;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
+using FluentValidation;
 using Microsoft.Extensions.Logging;
 using Orders.BLL.Features.OrderShipping.DTOs.Requests;
 using Orders.BLL.Features.OrderShipping.DTOs.Responces;
@@ -20,15 +21,37 @@ namespace Orders.BLL.Features.OrderShipping.Services.Implementations
         private readonly ILogger<OrderShippingService> _logger;
         private readonly IMapper _mapper;
 
-        public OrderShippingService(IUnitOfWork unitOfWork, ILogger<OrderShippingService> logger, IMapper mapper)
+        private readonly IValidator<GetOrderShippingByIdRequest> _getOrderShippingByIdRequestValidator;
+        private readonly IValidator<GetOrderShippingByOrderIdRequest> _getOrderShippingByOrderIdRequestValidator;
+        private readonly IValidator<CreateOrderShippingRequest> _createOrderShippingRequestValidator;
+        private readonly IValidator<UpdateOrderShippingRequest> _updateOrderShippingRequestValidator;
+        private readonly IValidator<DeleteOrderShippingRequest> _deleteOrderShippingRequestValidator;
+
+        public OrderShippingService(
+            IUnitOfWork unitOfWork,
+            ILogger<OrderShippingService> logger,
+            IMapper mapper,
+            IValidator<GetOrderShippingByIdRequest> getOrderShippingByIdRequestValidator,
+            IValidator<GetOrderShippingByOrderIdRequest> getOrderShippingByOrderIdRequestValidator,
+            IValidator<CreateOrderShippingRequest> createOrderShippingRequestValidator,
+            IValidator<UpdateOrderShippingRequest> updateOrderShippingRequestValidator,
+            IValidator<DeleteOrderShippingRequest> deleteOrderShippingRequestValidator
+            )
         {
             _unitOfWork = unitOfWork;
             _logger = logger;
             _mapper = mapper;
+            _getOrderShippingByIdRequestValidator = getOrderShippingByIdRequestValidator;
+            _getOrderShippingByOrderIdRequestValidator = getOrderShippingByOrderIdRequestValidator;
+            _createOrderShippingRequestValidator = createOrderShippingRequestValidator;
+            _updateOrderShippingRequestValidator = updateOrderShippingRequestValidator;
+            _deleteOrderShippingRequestValidator = deleteOrderShippingRequestValidator;
         }
 
         public async Task<Result<OrderShippingDto?>> GetOrderShippingByIdAsync(GetOrderShippingByIdRequest request, CancellationToken cancellationToken)
         {
+            await _getOrderShippingByIdRequestValidator.ValidateAndThrowAsync(request, cancellationToken);
+
             try
             {
                 await _unitOfWork.BeginTransactionAsync();
@@ -51,6 +74,8 @@ namespace Orders.BLL.Features.OrderShipping.Services.Implementations
 
         public async Task<Result<OrderShippingDto?>> GetOrderShippingByOrderIdAsync(GetOrderShippingByOrderIdRequest request, CancellationToken cancellationToken)
         {
+            await _getOrderShippingByOrderIdRequestValidator.ValidateAndThrowAsync(request, cancellationToken);
+
             try
             {
                 await _unitOfWork.BeginTransactionAsync();
@@ -73,6 +98,8 @@ namespace Orders.BLL.Features.OrderShipping.Services.Implementations
 
         public async Task<Result<OrderShippingDto>> CreateOrderShippingAsync(CreateOrderShippingRequest request, CancellationToken cancellationToken)
         {
+            await _createOrderShippingRequestValidator.ValidateAndThrowAsync(request, cancellationToken);
+
             try
             {
                 await _unitOfWork.BeginTransactionAsync();
@@ -103,6 +130,8 @@ namespace Orders.BLL.Features.OrderShipping.Services.Implementations
 
         public async Task<Result<OrderShippingDto>> UpdateOrderShippingAsync(Guid shippingId, UpdateOrderShippingRequest request, CancellationToken cancellationToken)
         {
+            await _updateOrderShippingRequestValidator.ValidateAndThrowAsync(request, cancellationToken);
+
             try
             {
                 await _unitOfWork.BeginTransactionAsync();
@@ -134,6 +163,8 @@ namespace Orders.BLL.Features.OrderShipping.Services.Implementations
 
         public async Task<Result<bool>> DeleteOrderShippingAsync(DeleteOrderShippingRequest request, CancellationToken cancellationToken)
         {
+            await _deleteOrderShippingRequestValidator.ValidateAndThrowAsync(request, cancellationToken);
+
             try
             {
                 await _unitOfWork.BeginTransactionAsync();

@@ -20,6 +20,7 @@ namespace Orders.DAL.Repositories.Implementations
             {
                 // Примітка: використовуємо GetString та GetGuid за іменем колонки
                 CustomerId = reader.GetGuid(reader.GetOrdinal("customer_id")),
+                UserId = reader.GetGuid(reader.GetOrdinal("user_id")),
                 FullName = reader.GetString(reader.GetOrdinal("full_name")),
                 Email = reader.GetString(reader.GetOrdinal("email"))
             };
@@ -29,7 +30,7 @@ namespace Orders.DAL.Repositories.Implementations
         {
             ThrowIfConnectionOrTransactionIsUninitialized();
 
-            const string sql = "SELECT customer_id, full_name, email FROM customers WHERE customer_id = @Id";
+            const string sql = "SELECT customer_id, user_id, full_name, email FROM customers WHERE customer_id = @Id";
 
             await using var command = Connection.CreateCommand();
             command.CommandText = sql;
@@ -58,7 +59,7 @@ namespace Orders.DAL.Repositories.Implementations
             var skip = (pageNumber - 1) * pageSize;
 
             // PostgreSQL синтаксис для пагінації (OFFSET/FETCH)
-            const string sql = "SELECT customer_id, full_name, email FROM customers OFFSET @Skip ROWS FETCH NEXT @Take ROWS ONLY";
+            const string sql = "SELECT customer_id, user_id, full_name, email FROM customers OFFSET @Skip ROWS FETCH NEXT @Take ROWS ONLY";
 
             await using var command = Connection.CreateCommand();
             command.CommandText = sql;
@@ -104,6 +105,11 @@ namespace Orders.DAL.Repositories.Implementations
             idParam.ParameterName = "p_customer_id";
             idParam.Value = customer.CustomerId;
             command.Parameters.Add(idParam);
+
+            var userIdParam = command.CreateParameter();
+            userIdParam.ParameterName = "p_user_id";
+            userIdParam.Value = customer.UserId;
+            command.Parameters.Add(userIdParam);
 
             var nameParam = command.CreateParameter();
             nameParam.ParameterName = "p_full_name";

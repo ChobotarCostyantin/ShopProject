@@ -8,5 +8,6 @@ namespace Catalog.DAL.Repositories.Interfaces
 {
     public interface ICategoryRepository : IGenericRepository<Category>
     {
+        Task<Category?> GetCategoryWithProductsAsync(Guid categoryId, CancellationToken cancellationToken);
     }
 }

@@ -8,6 +8,5 @@ namespace Catalog.DAL.Repositories.Interfaces
 {
     public interface IProductDetailsRepository : IGenericRepository<ProductDetails>
     {
-        
     }
 }

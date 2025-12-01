@@ -1,5 +1,6 @@
 CREATE TABLE IF NOT EXISTS customers (
     customer_id UUID PRIMARY KEY,
+    user_id UUID UNIQUE NOT NULL,
     full_name VARCHAR(100) NOT NULL,
     email VARCHAR(100) UNIQUE NOT NULL
 );

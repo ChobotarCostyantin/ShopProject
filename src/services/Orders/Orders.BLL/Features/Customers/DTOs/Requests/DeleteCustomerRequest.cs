@@ -6,7 +6,5 @@ using System.Threading.Tasks;
 
 namespace Orders.BLL.Features.Customers.DTOs.Requests
 {
-    public record DeleteCustomerRequest(
-        [Required(ErrorMessage = "CustomerId is required")] Guid CustomerId
-    );
+    public record DeleteCustomerRequest(Guid CustomerId);
 }

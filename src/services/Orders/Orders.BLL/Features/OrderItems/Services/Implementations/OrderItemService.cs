@@ -19,20 +19,37 @@ namespace Orders.BLL.Features.OrderItems.Services.Implementations
     public class OrderItemService : IOrderItemService
     {
         private readonly IUnitOfWork _unitOfWork;
-        private readonly IValidator<CreateOrderItemRequest> _createOrderItemRequestValidator;
         private readonly ILogger<OrderItemService> _logger;
         private readonly IMapper _mapper;
 
-        public OrderItemService(IUnitOfWork unitOfWork, IValidator<CreateOrderItemRequest> createOrderItemRequestValidator, ILogger<OrderItemService> logger, IMapper mapper)
+        private readonly IValidator<CreateOrderItemRequest> _createOrderItemRequestValidator;
+        private readonly IValidator<GetOrderItemByIdRequest> _getOrderItemByIdRequestValidator;
+        private readonly IValidator<UpdateOrderItemRequest> _updateOrderItemRequestValidator;
+        private readonly IValidator<DeleteOrderItemRequest> _deleteOrderItemRequestValidator;
+
+        public OrderItemService(
+            IUnitOfWork unitOfWork,
+            ILogger<OrderItemService> logger,
+            IMapper mapper,
+            IValidator<CreateOrderItemRequest> createOrderItemRequestValidator,
+            IValidator<GetOrderItemByIdRequest> getOrderItemByIdRequestValidator,
+            IValidator<UpdateOrderItemRequest> updateOrderItemRequestValidator,
+            IValidator<DeleteOrderItemRequest> deleteOrderItemRequestValidator
+            )
         {
             _unitOfWork = unitOfWork;
-            _createOrderItemRequestValidator = createOrderItemRequestValidator;
             _logger = logger;
             _mapper = mapper;
+            _createOrderItemRequestValidator = createOrderItemRequestValidator;
+            _getOrderItemByIdRequestValidator = getOrderItemByIdRequestValidator;
+            _updateOrderItemRequestValidator = updateOrderItemRequestValidator;
+            _deleteOrderItemRequestValidator = deleteOrderItemRequestValidator;
         }
 
         public async Task<Result<OrderItemDto>> GetOrderItemByIdAsync(GetOrderItemByIdRequest request, CancellationToken cancellationToken)
         {
+            await _getOrderItemByIdRequestValidator.ValidateAndThrowAsync(request, cancellationToken);
+
             try
             {
                 await _unitOfWork.BeginTransactionAsync();
@@ -55,11 +72,7 @@ namespace Orders.BLL.Features.OrderItems.Services.Implementations
 
         public async Task<Result<OrderItemDto>> CreateOrderItemAsync(CreateOrderItemRequest request, CancellationToken cancellationToken)
         {
-            var validationResult = await _createOrderItemRequestValidator.ValidateAsync(request, cancellationToken);
-            if (!validationResult.IsValid)
-            {
-                return Result<OrderItemDto>.NotFound(alternativeMessage: $"Product with id of {request.ProductId} was not found");
-            }
+            await _createOrderItemRequestValidator.ValidateAndThrowAsync(request, cancellationToken);
 
             try
             {
@@ -91,6 +104,8 @@ namespace Orders.BLL.Features.OrderItems.Services.Implementations
 
         public async Task<Result<OrderItemDto>> UpdateOrderItemAsync(Guid orderItemId, UpdateOrderItemRequest request, CancellationToken cancellationToken)
         {
+            await _updateOrderItemRequestValidator.ValidateAndThrowAsync(request, cancellationToken);
+
             try
             {
                 await _unitOfWork.BeginTransactionAsync();
@@ -120,6 +135,8 @@ namespace Orders.BLL.Features.OrderItems.Services.Implementations
 
         public async Task<Result<bool>> DeleteOrderItemAsync(DeleteOrderItemRequest request, CancellationToken cancellationToken)
         {
+            await _deleteOrderItemRequestValidator.ValidateAndThrowAsync(request, cancellationToken);
+
             try
             {
                 await _unitOfWork.BeginTransactionAsync();

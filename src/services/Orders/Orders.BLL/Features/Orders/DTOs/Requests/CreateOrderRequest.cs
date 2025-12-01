@@ -9,9 +9,7 @@ using Orders.BLL.Features.OrderItems.DTOs.Requests;
 namespace Orders.BLL.Features.Orders.DTOs.Requests
 {
     public record CreateOrderRequest(
-        [Required(ErrorMessage = "Customer id is required")] Guid CustomerId,
-
-        [NotInPast]
-        [Required(ErrorMessage = "Delivery date is required")] DateTime DeliveryDate
+        Guid CustomerId,
+        DateTime DeliveryDate
     );
 }

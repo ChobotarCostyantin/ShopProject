@@ -1,5 +1,6 @@
 using System.Data.Common;
 using AutoMapper;
+using FluentValidation;
 using Microsoft.Extensions.Logging;
 using Orders.BLL.Features.Customers.DTOs.Requests;
 using Orders.BLL.Features.Customers.DTOs.Responses;
@@ -17,15 +18,34 @@ namespace Orders.BLL.Features.Customers.Services.Implementations
         private readonly IUnitOfWork _unitOfWork;
         private readonly ILogger<CustomerService> _logger;
         private readonly IMapper _mapper;
-        public CustomerService(IUnitOfWork unitOfWork, ILogger<CustomerService> logger, IMapper mapper)
+
+        private readonly IValidator<CreateCustomerRequest> _createCustomerRequestValidator;
+        private readonly IValidator<GetCustomerByIdRequest> _getCustomerByIdRequestValidator;
+        private readonly IValidator<UpdateCustomerRequest> _updateCustomerRequestValidator;
+        private readonly IValidator<DeleteCustomerRequest> _deleteCustomerRequestValidator;
+        public CustomerService(
+            IUnitOfWork unitOfWork,
+            ILogger<CustomerService> logger,
+            IMapper mapper,
+            IValidator<CreateCustomerRequest> createCustomerRequestValidator,
+            IValidator<GetCustomerByIdRequest> getCustomerByIdRequestValidator,
+            IValidator<UpdateCustomerRequest> updateCustomerRequestValidator,
+            IValidator<DeleteCustomerRequest> deleteCustomerRequestValidator
+            )
         {
             _unitOfWork = unitOfWork;
             _logger = logger;
             _mapper = mapper;
+            _createCustomerRequestValidator = createCustomerRequestValidator;
+            _getCustomerByIdRequestValidator = getCustomerByIdRequestValidator;
+            _updateCustomerRequestValidator = updateCustomerRequestValidator;
+            _deleteCustomerRequestValidator = deleteCustomerRequestValidator;
         }
 
         public async Task<Result<CustomerDto>> CreateCustomerAsync(CreateCustomerRequest request, CancellationToken cancellationToken)
         {
+            await _createCustomerRequestValidator.ValidateAndThrowAsync(request, cancellationToken);
+
             try
             {
                 await _unitOfWork.BeginTransactionAsync();
@@ -49,6 +69,8 @@ namespace Orders.BLL.Features.Customers.Services.Implementations
 
         public async Task<Result<CustomerDto>> GetCustomerByIdAsync(GetCustomerByIdRequest request, CancellationToken cancellationToken)
         {
+            await _getCustomerByIdRequestValidator.ValidateAndThrowAsync(request, cancellationToken);
+                
             try
             {
                 await _unitOfWork.BeginTransactionAsync();
@@ -71,6 +93,8 @@ namespace Orders.BLL.Features.Customers.Services.Implementations
 
         public async Task<Result<CustomerDto>> UpdateCustomerAsync(Guid customerId, UpdateCustomerRequest request, CancellationToken cancellationToken)
         {
+            await _updateCustomerRequestValidator.ValidateAndThrowAsync(request, cancellationToken);
+
             try
             {
                 await _unitOfWork.BeginTransactionAsync();
@@ -100,6 +124,8 @@ namespace Orders.BLL.Features.Customers.Services.Implementations
 
         public async Task<Result<bool>> DeleteCustomerAsync(DeleteCustomerRequest request, CancellationToken cancellationToken)
         {
+            await _deleteCustomerRequestValidator.ValidateAndThrowAsync(request, cancellationToken);
+
             try
             {
                 await _unitOfWork.BeginTransactionAsync();

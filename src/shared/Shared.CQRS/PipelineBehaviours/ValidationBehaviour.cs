@@ -27,11 +27,11 @@ public class ValidationBehaviour<TRequest, TResponse> : IPipelineBehavior<TReque
             .SelectMany(x => x.Errors)
             .ToList();
 
-        if (errors.Any())
+        if (errors.Count != 0)
         {
             throw new ValidationException(errors);
         }
 
-        return await next();
+        return await next(cancellationToken);
     }
 }

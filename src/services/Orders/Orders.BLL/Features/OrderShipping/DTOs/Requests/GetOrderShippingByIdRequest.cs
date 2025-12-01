@@ -6,7 +6,5 @@ using System.Threading.Tasks;
 
 namespace Orders.BLL.Features.OrderShipping.DTOs.Requests
 {
-    public record GetOrderShippingByIdRequest(
-        [Required(ErrorMessage = "Shipping id is required")] Guid ShippingId
-    );
+    public record GetOrderShippingByIdRequest(Guid ShippingId);
 }

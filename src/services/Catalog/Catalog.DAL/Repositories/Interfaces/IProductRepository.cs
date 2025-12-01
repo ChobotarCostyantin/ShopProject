@@ -8,5 +8,6 @@ namespace Catalog.DAL.Repositories.Interfaces
 {
     public interface IProductRepository : IGenericRepository<Product>
     {
+        Task<Product?> GetProductWithRelatedEntitiesAsync(Guid productId, bool includeProductDetails, bool includeProductTags, bool includeCategory, CancellationToken cancellationToken);
     }
 }

@@ -4,11 +4,12 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 using Orders.Domain.Enums;
+using Shared.ValidationAttributes;
 
 namespace Orders.BLL.Features.Orders.DTOs.Requests
 {
     public record UpdateOrderRequest(
-        [Required(ErrorMessage = "Delivery date is required")] DateTime DeliveryDate,
-        [Required(ErrorMessage = "Status is required")] Status Status
+        DateTime DeliveryDate,
+        Status Status
     );
 }

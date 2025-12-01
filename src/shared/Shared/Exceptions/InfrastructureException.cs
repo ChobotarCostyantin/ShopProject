@@ -23,3 +23,9 @@ public class EntityNotFoundException : InfrastructureException
     public EntityNotFoundException(string message, Exception? inner = null)
         : base(message, inner) { }
 }
+
+public class ConflictException : InfrastructureException
+{
+    public ConflictException(string message, Exception? inner = null)
+        : base(message, inner) { }
+}

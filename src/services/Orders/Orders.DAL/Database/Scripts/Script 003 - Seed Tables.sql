@@ -1,10 +1,10 @@
 BEGIN;
 
 -- 1. Insert Customers
-INSERT INTO customers (customer_id, full_name, email) VALUES
-('11111111-1111-1111-1111-111111111111', 'Oleksandr Bondarenko', 'alex.bond@test.com'),
-('22222222-2222-2222-2222-222222222222', 'Maria Kovalenko', 'maria.koval@test.com'),
-('33333333-3333-3333-3333-333333333333', 'Ivan Petrov', 'ivan.petrov@test.com');
+INSERT INTO customers (customer_id, user_id, full_name, email) VALUES
+('11111111-1111-1111-1111-111111111111', '1a1a1a1a-1a1a-1a1a-1a1a-1a1a1a1a1a1a', 'Oleksandr Bondarenko', 'alex.bond@test.com'),
+('22222222-2222-2222-2222-222222222222', '2a2a2a2a-2a2a-2a2a-2a2a-2a2a2a2a2a2a', 'Maria Kovalenko', 'maria.koval@test.com'),
+('33333333-3333-3333-3333-333333333333', '3a3a3a3a-3a3a-3a3a-3a3a-3a3a3a3a3a3a', 'Ivan Petrov', 'ivan.petrov@test.com');
 
 -- 2. Insert Orders
 INSERT INTO orders (order_id, customer_id, delivery_date, total_price, status, created_at) VALUES

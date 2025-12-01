@@ -11,9 +11,16 @@ namespace Orders.BLL.Features.OrderItems.Validators
     {
         public CreatOrderItemRequestValidator()
         {
+            RuleFor(x => x.OrderId)
+                .NotEmpty().WithMessage("Order id is required");
+
             RuleFor(x => x.ProductId)
-                .MustAsync(CheckIfProductExists)
-                .WithMessage("Product with provided id does not exist");
+                .NotEmpty().WithMessage("Product id is required")
+                .MustAsync(CheckIfProductExists).WithMessage("Product with provided id does not exist");
+
+            RuleFor(x => x.Quantity)
+                .NotEmpty().WithMessage("Quantity is required")
+                .GreaterThan(0).WithMessage("Quantity must be greater than 0");
         }
 
         private Task<bool> CheckIfProductExists(Guid productId, CancellationToken cancellationToken)

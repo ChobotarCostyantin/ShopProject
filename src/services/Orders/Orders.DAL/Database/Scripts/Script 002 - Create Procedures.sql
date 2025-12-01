@@ -18,14 +18,15 @@ $$;
 -- 2. CREATE: Транзакційне створення клієнта
 CREATE OR REPLACE PROCEDURE create_customer(
     IN p_customer_id UUID,
+    IN p_user_id UUID,
     IN p_full_name VARCHAR,
     IN p_email VARCHAR
 )
 LANGUAGE plpgsql
 AS $$
 BEGIN
-    INSERT INTO customers (customer_id, full_name, email)
-    VALUES (p_customer_id, p_full_name, p_email);
+    INSERT INTO customers (customer_id, user_id, full_name, email)
+    VALUES (p_customer_id, p_user_id, p_full_name, p_email);
 END;
 $$;
 

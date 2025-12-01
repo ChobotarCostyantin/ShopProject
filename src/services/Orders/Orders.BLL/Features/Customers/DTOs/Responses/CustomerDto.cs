@@ -7,6 +7,7 @@ namespace Orders.BLL.Features.Customers.DTOs.Responses
 {
     public record CustomerDto(
         Guid CustomerId,
+        Guid UserId,
         string FullName,
         string Email
     );

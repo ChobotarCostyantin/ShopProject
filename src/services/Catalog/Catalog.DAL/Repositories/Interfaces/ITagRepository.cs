@@ -8,6 +8,6 @@ namespace Catalog.DAL.Repositories.Interfaces
 {
     public interface ITagRepository : IGenericRepository<Tag>
     {
-        
+        Task<IEnumerable<Tag>> GetTagsByCategoryNameAsync(string categoryName, CancellationToken cancellationToken);
     }
 }
