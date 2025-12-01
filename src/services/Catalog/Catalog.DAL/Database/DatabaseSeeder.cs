@@ -12,7 +12,6 @@ namespace Catalog.DAL.Database
         public static void SeedDatabase(ModelBuilder modelBuilder)
         {
             SeedCategory(modelBuilder);
-            SeedTag(modelBuilder);
             SeedProduct(modelBuilder);
         }
         private static void SeedCategory(ModelBuilder modelBuilder)
@@ -85,23 +84,6 @@ namespace Catalog.DAL.Database
                     Price = 30000,
                     StockQuantity = 3,
                     IsDeleted = false
-                }
-                );
-        }
-
-        private static void SeedTag(ModelBuilder modelBuilder)
-        {
-            modelBuilder
-                .Entity<Tag>()
-                .HasData(new Tag
-                {
-                    TagId = new Guid("88888888-8888-8888-8888-888888888888"),
-                    Name = "New"
-                },
-                new Tag
-                {
-                    TagId = new Guid("adcdcdcd-cdcd-cdcd-cdcd-cdcdcdcdcdcd"),
-                    Name = "Hot"
                 }
                 );
         }

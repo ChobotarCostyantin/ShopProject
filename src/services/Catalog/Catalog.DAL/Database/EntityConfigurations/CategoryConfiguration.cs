@@ -20,8 +20,8 @@ namespace Catalog.DAL.Database.EntityConfigurations
                 .IsRequired()
                 .HasMaxLength(100);
 
-            builder.Property(x => x.IsDeleted)
-                .HasDefaultValue(false);
+            builder.HasIndex(x => x.Name)
+                .IsUnique();
 
             builder.HasMany(x => x.Products)
                 .WithOne(x => x.Category)

@@ -13,7 +13,7 @@ namespace Catalog.DAL.Models
         public string Sku { get; set; } = null!;
         public decimal Price { get; set; }
         public int StockQuantity { get; set; }
-        public bool IsDeleted { get; set; }
+        public int ReorderLevel { get; set; }
         public DateTimeOffset CreatedAt { get; set; }
 
         public Category Category { get; set; } = null!;

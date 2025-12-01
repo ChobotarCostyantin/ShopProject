@@ -20,6 +20,9 @@ namespace Catalog.DAL.Database.EntityConfigurations
                 .IsRequired()
                 .HasMaxLength(50);
 
+            builder.HasIndex(x => x.Name)
+                .IsUnique();
+
             builder.HasMany(x => x.ProductTags)
                 .WithOne(x => x.Tag)
                 .HasForeignKey(x => x.TagId);

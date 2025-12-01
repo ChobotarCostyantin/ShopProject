@@ -42,9 +42,6 @@ namespace Catalog.DAL.Database.EntityConfigurations
             builder.ToTable(
                 x => x.HasCheckConstraint("ck_stock_quantity_greater_than_zero", "stock_quantity > 0"));
 
-            builder.Property(x => x.IsDeleted)
-                .HasDefaultValue(false);
-
             builder.HasOne(x => x.Category)
                 .WithMany(x => x.Products)
                 .HasForeignKey(x => x.CategoryId)
