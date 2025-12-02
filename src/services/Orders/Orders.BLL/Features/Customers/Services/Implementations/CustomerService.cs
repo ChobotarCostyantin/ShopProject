@@ -44,10 +44,15 @@ namespace Orders.BLL.Features.Customers.Services.Implementations
 
         public async Task<Result<CustomerDto>> CreateCustomerAsync(CreateCustomerRequest request, CancellationToken cancellationToken)
         {
-            await _createCustomerRequestValidator.ValidateAndThrowAsync(request, cancellationToken);
-
+            // await _createCustomerRequestValidator.ValidateAndThrowAsync(request, cancellationToken);
             try
             {
+                var validationResult = await _createCustomerRequestValidator.ValidateAsync(request, cancellationToken);
+                if (!validationResult.IsValid)
+                {
+                    return Result<CustomerDto>.BadRequest(validationResult.Errors[0].ErrorMessage);
+                }
+
                 await _unitOfWork.BeginTransactionAsync();
 
                 var customer = _mapper.Map<Customer>(request);
@@ -69,10 +74,15 @@ namespace Orders.BLL.Features.Customers.Services.Implementations
 
         public async Task<Result<CustomerDto>> GetCustomerByIdAsync(GetCustomerByIdRequest request, CancellationToken cancellationToken)
         {
-            await _getCustomerByIdRequestValidator.ValidateAndThrowAsync(request, cancellationToken);
-                
+            // await _getCustomerByIdRequestValidator.ValidateAndThrowAsync(request, cancellationToken);
             try
             {
+                // var validationResult = await _getCustomerByIdRequestValidator.ValidateAsync(request, cancellationToken);
+                // if (!validationResult.IsValid)
+                // {
+                //     return Result<CustomerDto>.BadRequest(validationResult.Errors[0].ErrorMessage);
+                // }
+
                 await _unitOfWork.BeginTransactionAsync();
 
                 var customer = await _unitOfWork.CustomerRepository.GetCustomerAsync(request.CustomerId, cancellationToken);
@@ -93,8 +103,7 @@ namespace Orders.BLL.Features.Customers.Services.Implementations
 
         public async Task<Result<CustomerDto>> UpdateCustomerAsync(Guid customerId, UpdateCustomerRequest request, CancellationToken cancellationToken)
         {
-            await _updateCustomerRequestValidator.ValidateAndThrowAsync(request, cancellationToken);
-
+            // await _updateCustomerRequestValidator.ValidateAndThrowAsync(request, cancellationToken);
             try
             {
                 await _unitOfWork.BeginTransactionAsync();
@@ -104,6 +113,12 @@ namespace Orders.BLL.Features.Customers.Services.Implementations
                 {
                     await _unitOfWork.CommitTransactionAsync();
                     return Result<CustomerDto>.NotFound(key: customerId, entityName: nameof(Customer));
+                }
+
+                var validationResult = await _updateCustomerRequestValidator.ValidateAsync(request, cancellationToken);
+                if (!validationResult.IsValid)
+                {
+                    return Result<CustomerDto>.BadRequest(validationResult.Errors[0].ErrorMessage);
                 }
 
                 customer.FullName = request.FullName;
@@ -124,8 +139,7 @@ namespace Orders.BLL.Features.Customers.Services.Implementations
 
         public async Task<Result<bool>> DeleteCustomerAsync(DeleteCustomerRequest request, CancellationToken cancellationToken)
         {
-            await _deleteCustomerRequestValidator.ValidateAndThrowAsync(request, cancellationToken);
-
+            // await _deleteCustomerRequestValidator.ValidateAndThrowAsync(request, cancellationToken);
             try
             {
                 await _unitOfWork.BeginTransactionAsync();
@@ -136,6 +150,12 @@ namespace Orders.BLL.Features.Customers.Services.Implementations
                     await _unitOfWork.CommitTransactionAsync();
                     return Result<bool>.NotFound(key: request.CustomerId, entityName: nameof(Customer));
                 }
+
+                // var validationResult = await _deleteCustomerRequestValidator.ValidateAsync(request, cancellationToken);
+                // if (!validationResult.IsValid)
+                // {
+                //     return Result<bool>.BadRequest(validationResult.Errors[0].ErrorMessage);
+                // }
 
                 await _unitOfWork.CustomerRepository.DeleteCustomerAsync(request.CustomerId, cancellationToken);
 

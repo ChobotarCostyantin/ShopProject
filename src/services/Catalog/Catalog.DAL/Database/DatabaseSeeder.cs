@@ -42,8 +42,7 @@ namespace Catalog.DAL.Database
                     {
                         CategoryId = new Guid("b3e7c2e7-6b7b-4b7b-9b7b-7b7b7b7b7b7f"),
                         Name = "Accessories"
-                    }
-                    );
+                    });
         }
 
         private static void SeedProduct(ModelBuilder modelBuilder)
@@ -57,8 +56,7 @@ namespace Catalog.DAL.Database
                     Name = "iPhone X",
                     Sku = "iphonex",
                     Price = 21000,
-                    StockQuantity = 20,
-                    ReorderLevel = 5
+                    StockQuantity = 20
                 },
                 new Product
                 {
@@ -67,8 +65,7 @@ namespace Catalog.DAL.Database
                     Name = "MacBook Pro 13",
                     Sku = "macbookpro13",
                     Price = 50000,
-                    StockQuantity = 10,
-                    ReorderLevel = 3
+                    StockQuantity = 10
                 },
                 new Product
                 {
@@ -77,10 +74,8 @@ namespace Catalog.DAL.Database
                     Name = "iPad Pro 11",
                     Sku = "ipadpro11",
                     Price = 30000,
-                    StockQuantity = 5,
-                    ReorderLevel = 3
-                }
-                );
+                    StockQuantity = 5
+                });
         }
     }
 }

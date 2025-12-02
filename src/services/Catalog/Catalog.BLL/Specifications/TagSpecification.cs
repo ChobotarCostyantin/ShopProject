@@ -15,7 +15,7 @@ namespace Catalog.BLL.Specifications
         {
             if (!string.IsNullOrWhiteSpace(request.Name))
             {
-                Query.Where(m => EF.Functions.Like(m.Name, $"%{request.Name}%"));
+                Query.Where(m => EF.Functions.ILike(m.Name, $"%{request.Name}%"));
             }
 
             if (!string.IsNullOrWhiteSpace(request.SortBy))
@@ -28,8 +28,8 @@ namespace Catalog.BLL.Specifications
                         break;
 
                     default:
-                        if (request.SortDescending) Query.OrderByDescending(m => m.Name);
-                        else Query.OrderBy(m => m.Name);
+                        if (request.SortDescending) Query.OrderByDescending(m => m.TagId);
+                        else Query.OrderBy(m => m.TagId);
                         break;
                 }
             }

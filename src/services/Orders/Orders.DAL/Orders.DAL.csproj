@@ -7,28 +7,28 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\..\shared\Shared\Shared.csproj" />
-      <ProjectReference Include="..\Orders.Domain\Orders.Domain.csproj" />
+        <ProjectReference Include="..\..\..\shared\Shared\Shared.csproj" />
+        <ProjectReference Include="..\Orders.Domain\Orders.Domain.csproj" />
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="Dapper" Version="2.1.66" />
-      <PackageReference Include="dbup-postgresql" Version="6.0.3" />
-      <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="9.0.9" />
-      <PackageReference Include="Npgsql" Version="9.0.3"/>
+        <PackageReference Include="Dapper" Version="2.1.66" />
+        <PackageReference Include="dbup-postgresql" Version="6.1.5" />
+        <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="10.0.0" />
+        <PackageReference Include="Npgsql" Version="9.0.4" />
     </ItemGroup>
 
     <ItemGroup>
-        <FrameworkReference Include="Microsoft.AspNetCore.App"/>
+        <FrameworkReference Include="Microsoft.AspNetCore.App" />
     </ItemGroup>
 
     <ItemGroup>
-      <None Remove="Database\Scripts\Script 001 - Create Tables.sql" />
-      <EmbeddedResource Include="Database\Scripts\Script 001 - Create Tables.sql" />
-      <None Remove="Database\Scripts\Script 002 - Create Procedures.sql" />
-      <EmbeddedResource Include="Database\Scripts\Script 002 - Create Procedures.sql" />
-      <None Remove="Database\Scripts\Script 003 - Seed Tables.sql" />
-      <EmbeddedResource Include="Database\Scripts\Script 003 - Seed Tables.sql" />
+        <None Remove="Database\Scripts\Script 001 - Create Tables.sql" />
+        <EmbeddedResource Include="Database\Scripts\Script 001 - Create Tables.sql" />
+        <None Remove="Database\Scripts\Script 002 - Create Procedures.sql" />
+        <EmbeddedResource Include="Database\Scripts\Script 002 - Create Procedures.sql" />
+        <None Remove="Database\Scripts\Script 003 - Seed Tables.sql" />
+        <EmbeddedResource Include="Database\Scripts\Script 003 - Seed Tables.sql" />
     </ItemGroup>
 
 </Project>

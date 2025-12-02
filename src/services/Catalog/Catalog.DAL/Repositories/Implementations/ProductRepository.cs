@@ -13,14 +13,21 @@ namespace Catalog.DAL.Repositories.Implementations
     {
         public ProductRepository(CatalogDbContext dbContext) : base(dbContext) { }
 
-        public async Task<Product?> GetProductWithRelatedEntitiesAsync(Guid productId, bool includeProductDetail, bool includeProductTags, bool includeCategory, CancellationToken cancellationToken)
+        public async Task<Product?> GetProductWithRelatedEntitiesAsync(Guid productId, bool includeCategory, bool includeProductDetail, bool includeProductTags, CancellationToken cancellationToken)
         {
             var product = await _dbContext.Products
                 .Where(p => p.ProductId == productId)
                 .FirstOrDefaultAsync(cancellationToken: cancellationToken);
-            
+
             if (product == null) return null;
-            
+
+            if (includeCategory)
+            {
+                await _dbContext.Entry(product)
+                    .Reference(x => x.Category)
+                    .LoadAsync(cancellationToken);
+            }
+
             if (includeProductDetail)
             {
                 await _dbContext.Entry(product)
@@ -32,13 +39,8 @@ namespace Catalog.DAL.Repositories.Implementations
             {
                 await _dbContext.Entry(product)
                     .Collection(x => x.ProductTags)
-                    .LoadAsync(cancellationToken);
-            }
-
-            if (includeCategory)
-            {
-                await _dbContext.Entry(product)
-                    .Reference(x => x.Category)
+                    .Query()
+                    .Include(pt => pt.Tag)
                     .LoadAsync(cancellationToken);
             }
 

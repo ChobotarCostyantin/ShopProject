@@ -11,10 +11,9 @@ namespace Catalog.BLL.Services.Interfaces
 {
     public interface ICategoryService
     {
-        Task<Result<CategoryDto?>> GetByIdAsync(Guid CategoryId, CancellationToken cancellationToken);
+        Task<Result<CategoryDto?>> GetCategoryByIdAsync(Guid categoryId, CancellationToken cancellationToken);
         Task<Result<PaginationResult<CategoryDto>>> GetCategoriesAsync(GetCategoriesRequest request, CancellationToken cancellationToken);
         Task<Result<CategoryDto>> CreateCategoryAsync(CreateCategoryRequest request, CancellationToken cancellationToken);
-        Task<Result<CategoryDto>> UpdateCategoryAsync(Guid CategoryId, UpdateCategoryRequest request, CancellationToken cancellationToken);
-        Task<Result<CategoryDto>> DeleteCategoryAsync(Guid CategoryId, CancellationToken cancellationToken);
+        Task<Result<bool>> DeleteCategoryAsync(Guid categoryId, CancellationToken cancellationToken);
     }
 }

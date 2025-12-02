@@ -15,7 +15,7 @@ namespace Catalog.BLL.Specifications
         {
             if (!string.IsNullOrWhiteSpace(request.Name))
             {
-                Query.Where(m => EF.Functions.Like(m.Name, $"%{request.Name}%"));
+                Query.Where(m => EF.Functions.ILike(m.Name, $"%{request.Name}%"));
             }
 
             if (!string.IsNullOrWhiteSpace(request.SortBy))

@@ -16,7 +16,8 @@ namespace Catalog.DAL.Database.EntityConfigurations
 
             builder.HasKey(x => x.ProductId);
 
-            builder.Property(x => x.CategoryId);
+            builder.Property(x => x.CategoryId)
+                .IsRequired();
 
             builder.Property(x => x.Name)
                 .IsRequired()

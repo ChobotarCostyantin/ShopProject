@@ -24,7 +24,8 @@ namespace Catalog.DAL.Database.EntityConfigurations
 
             builder.Property(x => x.Description)
                 .HasColumnType("TEXT")
-                .IsRequired(false);
+                .IsRequired(false)
+                .HasMaxLength(500);
 
             builder.Property(x => x.Manufacturer)
                 .IsRequired(false)
