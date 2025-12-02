@@ -10,23 +10,37 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - orders-db.volume:/var/lib/postgresql/data
+      - orders-db.volume:/var/lib/postgresql
 
-  orders.api:
-    image: orders.api
-    build:
-      context: .
-      dockerfile: src/services/Orders/Orders.API/Dockerfile
-    container_name: orders.api
+  # orders.api:
+  #   image: orders.api
+  #   build:
+  #     context: .
+  #     dockerfile: src/services/Orders/Orders.API/Dockerfile
+  #   container_name: orders.api
+  #   restart: always
+  #   environment:
+  #     - ASPNETCORE_ENVIRONMENT=Development
+  #     - ASPNETCORE_HTTP_PORTS=8080
+  #     - ConnectionStrings__ordersDb=Host=orders-db;Port=5432;Database=ordersDb;Username=admin;Password=12345;
+  #   depends_on:
+  #     - orders-db
+  #   ports:
+  #     - "16000:8080"
+
+  catalog-db:
+    image: postgres
+    container_name: catalog-db
     restart: always
     environment:
-      - ASPNETCORE_ENVIRONMENT=Development
-      - ASPNETCORE_HTTP_PORTS=8080
-      - ConnectionStrings__ordersDb=Host=orders-db;Port=5432;Database=ordersDb;Username=admin;Password=12345;
-    depends_on:
-      - orders-db
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=12345
+      - POSTGRES_DB=catalogDb
     ports:
-      - "16000:8080"
+      - "5433:5432"
+    volumes:
+      - catalog-db.volume:/var/lib/postgresql
 
 volumes:
   orders-db.volume:
+  catalog-db.volume:

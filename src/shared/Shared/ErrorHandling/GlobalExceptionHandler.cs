@@ -4,6 +4,7 @@ using FluentValidation;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Shared.Exceptions;
 
@@ -12,10 +13,12 @@ namespace Shared.ErrorHandling;
 public class GlobalExceptionHandler : IExceptionHandler
 {
     private readonly ILogger<GlobalExceptionHandler> _logger;
+    private readonly IHostEnvironment _env;
 
-    public GlobalExceptionHandler(ILogger<GlobalExceptionHandler> logger)
+    public GlobalExceptionHandler(ILogger<GlobalExceptionHandler> logger, IHostEnvironment env)
     {
         _logger = logger;
+        _env = env;
     }
 
     public async ValueTask<bool> TryHandleAsync(
@@ -42,7 +45,7 @@ public class GlobalExceptionHandler : IExceptionHandler
         return true;
     }
 
-    private static ProblemDetails CreateProblemDetails(Exception exception, HttpContext context)
+    private ProblemDetails CreateProblemDetails(Exception exception, HttpContext context)
     {
         return exception switch
         {
@@ -116,7 +119,7 @@ public class GlobalExceptionHandler : IExceptionHandler
             {
                 Type = "https://httpstatuses.com/500",
                 Title = "An unexpected error occurred",
-                Detail = "An unexpected error occurred.", // Ніколи не показуйте exception.Message тут для продакшену
+                Detail = _env.IsDevelopment() ? exception.ToString() : "An unexpected error occurred.",
                 Status = (int)HttpStatusCode.InternalServerError,
                 Instance = context.Request.Path
             }

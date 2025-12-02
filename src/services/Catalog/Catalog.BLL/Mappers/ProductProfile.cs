@@ -15,7 +15,9 @@ namespace Catalog.BLL.Mappers
         {
             CreateMap<CreateProductRequest, Product>();
             CreateMap<Product, ProductDto>()
-                .ForMember(dest => dest.Tags, opt => opt.MapFrom(src => src.ProductTags.Select(pt => pt.Tag)));
+                // Використовуємо ForCtorParam для записів (records) з конструктором
+                .ForCtorParam(nameof(ProductDto.Tags), opt => 
+                    opt.MapFrom(src => src.ProductTags.Select(pt => pt.Tag).ToArray()));
         }
     }
 }

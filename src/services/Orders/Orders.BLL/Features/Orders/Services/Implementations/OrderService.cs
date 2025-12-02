@@ -31,7 +31,6 @@ namespace Orders.BLL.Features.Orders.Services.Implementations
             IUnitOfWork unitOfWork,
             ILogger<OrderService> logger,
             IMapper mapper,
-            IValidator<GetOrdersByCustomerIdRequest> getOrdersByCustomerIdRequestValidator,
             IValidator<GetOrderByIdRequest> getOrderByIdRequestValidator,
             IValidator<CreateOrderRequest> createOrderRequestValidator,
             IValidator<UpdateOrderRequest> updateOrderRequestValidator,

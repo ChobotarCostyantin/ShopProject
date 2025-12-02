@@ -13,7 +13,7 @@ namespace Catalog.BLL.Specifications
     {
         public ProductSpecification(GetProductsRequest request, bool ignorePagination = false)
         {
-            if (!request.CategoryId.HasValue)
+            if (request.CategoryId.HasValue)
             {
                 Query.Where(m => m.CategoryId == request.CategoryId);
             }

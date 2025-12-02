@@ -10,7 +10,7 @@ namespace Catalog.DAL.Database
 {
     public class CatalogDbContext : DbContext
     {
-        public const string ConnectionStringConfigurationKey = "Default";
+        public const string ConnectionStringConfigurationKey = "catalogDb";
 
         public DbSet<Category> Categories => Set<Category>();
         public DbSet<Product> Products => Set<Product>();
