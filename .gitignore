@@ -3,6 +3,9 @@
 ##
 ## Get latest from `dotnet new gitignore`
 
+# Migration folder
+Migrations/
+
 # Visual Studio 2017
 .vscode/
 
