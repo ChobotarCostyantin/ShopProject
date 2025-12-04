@@ -8,10 +8,10 @@ CREATE TABLE IF NOT EXISTS customers (
 CREATE TABLE IF NOT EXISTS orders (
     order_id UUID PRIMARY KEY,
     customer_id UUID NOT NULL,
-    delivery_date TIMESTAMP WITHOUT TIME ZONE DEFAULT NOW(),
+    delivery_date TIMESTAMPTZ DEFAULT NOW(),
     total_price DECIMAL(18, 2) NOT NULL,
     status VARCHAR(50) DEFAULT 'New',
-    created_at TIMESTAMP DEFAULT NOW(),
+    created_at TIMESTAMPTZ DEFAULT NOW(),
     CONSTRAINT fk_order_customers FOREIGN KEY (customer_id) REFERENCES customers(customer_id) ON DELETE CASCADE,
     CONSTRAINT ck_total_price CHECK (total_price >= 0)
 );

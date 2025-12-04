@@ -38,7 +38,7 @@ namespace Orders.API.Controllers
             return (await _orderService.GetOrdersByCustomerIdAsync(customerId, request, cancellationToken)).ToApiResponse();
         }
 
-        [HttpGet("orders/{productId:guid}/orders")]
+        [HttpGet("by-product/{productId:guid}")]
         [ProducesResponseType(typeof (PaginationResult<OrderDto>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> GetByProductIdAsync([FromRoute] Guid productId, [FromQuery] GetOrdersByProductIdRequest request, CancellationToken cancellationToken)
@@ -59,7 +59,7 @@ namespace Orders.API.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> GetByIdAsync(Guid orderId, CancellationToken cancellationToken)
         {
-            return (await _orderService.GetOrderByIdAsync(new GetOrderByIdRequest(orderId), cancellationToken)).ToApiResponse();
+            return (await _orderService.GetOrderByIdAsync(orderId, cancellationToken)).ToApiResponse();
         }
 
         [HttpPost]
@@ -100,7 +100,7 @@ namespace Orders.API.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> GetOrderShippingAsync(Guid orderId, CancellationToken cancellationToken)
         {
-            return (await _orderShippingService.GetOrderShippingByOrderIdAsync(new GetOrderShippingByOrderIdRequest(orderId), cancellationToken)).ToApiResponse();
+            return (await _orderShippingService.GetOrderShippingByOrderIdAsync(orderId, cancellationToken)).ToApiResponse();
         }
     }
 }

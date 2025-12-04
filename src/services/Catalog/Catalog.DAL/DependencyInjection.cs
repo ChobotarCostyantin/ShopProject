@@ -75,12 +75,6 @@ namespace Catalog.DAL
 
             services.AddScoped<IUnitOfWork, UnitOfWork>();
 
-            services.AddOpenTelemetry()
-            .WithTracing(tracing =>
-            {
-                tracing.AddNpgsql();
-            });
-
             return services;
         }
     }

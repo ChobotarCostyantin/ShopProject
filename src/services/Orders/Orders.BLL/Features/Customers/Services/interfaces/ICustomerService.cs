@@ -12,9 +12,9 @@ namespace Orders.BLL.Features.Customers.Services.interfaces
     public interface ICustomerService
     {
         Task<Result<CustomerDto>> CreateCustomerAsync(CreateCustomerRequest request, CancellationToken cancellationToken);
-        Task<Result<CustomerDto>> GetCustomerByIdAsync(GetCustomerByIdRequest request, CancellationToken cancellationToken);
+        Task<Result<CustomerDto>> GetCustomerByIdAsync(Guid customerId, CancellationToken cancellationToken);
         Task<Result<CustomerDto>> UpdateCustomerAsync(Guid customerId, UpdateCustomerRequest request, CancellationToken cancellationToken);
-        Task<Result<bool>> DeleteCustomerAsync(DeleteCustomerRequest request, CancellationToken cancellationToken);
+        Task<Result<bool>> DeleteCustomerAsync(Guid customerId, CancellationToken cancellationToken);
         Task<Result<PaginationResult<CustomerDto>>> GetCustomersAsync(GetCustomersRequest request, CancellationToken cancellationToken);
     }
 }

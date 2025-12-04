@@ -14,7 +14,6 @@ public class OrdersClient
 
     public async Task<PaginationResult<OrderDto>?> GetOrdersByProductIdAsync(Guid productId, CancellationToken ct)
     {
-        // Приклад виклику
-        return await _client.GetFromJsonAsync<PaginationResult<OrderDto>>($"api/orders/{productId}/orders", ct);
+        return await _client.GetFromJsonAsync<PaginationResult<OrderDto>>($"api/orders/by-product/{productId}", ct);
     }
 }

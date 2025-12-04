@@ -63,6 +63,9 @@ namespace Microsoft.Extensions.Hosting
                 .WithTracing(tracing =>
                 {
                     tracing.AddSource(builder.Environment.ApplicationName)
+                        .AddSource("Yarp.ReverseProxy")
+                        .AddSource("Npgsql")
+                        .AddSource("MongoDB.Driver.Core.Extensions.DiagnosticSources")
                         .AddAspNetCoreInstrumentation(tracing =>
                             // Exclude health check requests from tracing
                             tracing.Filter = context =>

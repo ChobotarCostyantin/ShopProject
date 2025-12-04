@@ -2,10 +2,10 @@
 CREATE OR REPLACE PROCEDURE create_order(
     IN P_order_id UUID,
     IN p_customer_id UUID,
-    IN p_delivery_date TIMESTAMP WITHOUT TIME ZONE,
+    IN p_delivery_date TIMESTAMPTZ,
     IN p_total_price DECIMAL,
-    IN p_status VARCHAR,
-    IN p_created_at TIMESTAMP
+    IN p_status VARCHAR(50),
+    IN p_created_at TIMESTAMPTZ
 )
 LANGUAGE plpgsql
 AS $$
@@ -19,8 +19,8 @@ $$;
 CREATE OR REPLACE PROCEDURE create_customer(
     IN p_customer_id UUID,
     IN p_user_id UUID,
-    IN p_full_name VARCHAR,
-    IN p_email VARCHAR
+    IN p_full_name VARCHAR(100),
+    IN p_email VARCHAR(100)
 )
 LANGUAGE plpgsql
 AS $$
@@ -49,9 +49,9 @@ $$;
 CREATE OR REPLACE PROCEDURE create_order_shipping(
     IN p_shipping_id UUID,
     IN p_order_id UUID,
-    IN p_address_line VARCHAR,
-    IN p_city VARCHAR,
-    IN p_postal_code VARCHAR
+    IN p_address_line VARCHAR(200),
+    IN p_city VARCHAR(50),
+    IN p_postal_code VARCHAR(20)
 )
 LANGUAGE plpgsql
 AS $$

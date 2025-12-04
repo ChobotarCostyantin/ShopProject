@@ -7,6 +7,7 @@ using Shared.Http;
 using Shared.Middlewares;
 using SocialAndReviews.Application.Reviews.DTOs.Responces;
 using Microsoft.AspNetCore.Mvc;
+using System.Diagnostics;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -65,15 +66,24 @@ app.MapGet("/api/aggregator/full-product-data/{productId}", async (
     ILogger<Program> logger,
     CancellationToken ct) =>
 {
+    // Додайте using System.Diagnostics; на початку файлу
+
     async Task<T?> ExecuteSafelyAsync<T>(Func<Task<T?>> action, string serviceName)
     {
+        logger.LogInformation("Calling {ServiceName}...", serviceName);
+        var sw = Stopwatch.StartNew();
+        
         try
         {
-            return await action();
+            var result = await action();
+            sw.Stop();
+            logger.LogInformation("{ServiceName} responded in {Elapsed}ms", serviceName, sw.ElapsedMilliseconds);
+            return result;
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, "Не вдалося отримати дані з {ServiceName}", serviceName);
+            sw.Stop();
+            logger.LogError(ex, "Failed to call {ServiceName} (took {Elapsed}ms)", serviceName, sw.ElapsedMilliseconds);
             return default;
         }
     }

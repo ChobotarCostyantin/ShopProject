@@ -24,7 +24,7 @@ namespace Orders.API.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> GetByIdAsync(Guid shippingId, CancellationToken cancellationToken)
         {
-            return (await _orderShippingService.GetOrderShippingByIdAsync(new GetOrderShippingByIdRequest(shippingId), cancellationToken)).ToApiResponse();
+            return (await _orderShippingService.GetOrderShippingByIdAsync(shippingId, cancellationToken)).ToApiResponse();
         }
 
         [HttpPost]

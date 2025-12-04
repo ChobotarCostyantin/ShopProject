@@ -13,7 +13,7 @@ namespace Orders.Domain.Models
         public DateTime DeliveryDate { get; set; }
         public required decimal TotalPrice { get; set; }
         public Status Status { get; set; }
-        public DateTimeOffset CreatedAt { get; set; }
+        public DateTime CreatedAt { get; set; }
         public List<OrderItem> OrderItems { get; set; } = [];
     }
 }

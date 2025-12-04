@@ -11,7 +11,6 @@
     <ItemGroup>
         <ProjectReference Include="..\Aggregator\Aggregator.csproj" />
         <ProjectReference Include="..\ApiGateway\ApiGateway.csproj" />
-        <ProjectReference Include="..\ServiceDefaults\ServiceDefaults.csproj" />
         <ProjectReference Include="..\Orders\Orders.API\Orders.API.csproj" />
         <ProjectReference Include="..\Catalog\Catalog.API\Catalog.API.csproj" />
         <ProjectReference Include="..\SocialAndReviews\SocialAndReviews.API\SocialAndReviews.API.csproj" />

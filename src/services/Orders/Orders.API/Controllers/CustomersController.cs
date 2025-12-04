@@ -25,7 +25,7 @@ namespace Orders.API.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> GetByIdAsync(Guid customerId, CancellationToken cancellationToken)
         {
-            return (await _customerService.GetCustomerByIdAsync(new GetCustomerByIdRequest(customerId), cancellationToken)).ToApiResponse();
+            return (await _customerService.GetCustomerByIdAsync(customerId, cancellationToken)).ToApiResponse();
         }
 
         [HttpGet]
@@ -58,7 +58,7 @@ namespace Orders.API.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> DeleteAsync(Guid customerId, CancellationToken cancellationToken)
         {
-            return (await _customerService.DeleteCustomerAsync(new DeleteCustomerRequest(customerId), cancellationToken)).ToApiResponse();
+            return (await _customerService.DeleteCustomerAsync(customerId, cancellationToken)).ToApiResponse();
         }
     }
 }

@@ -31,12 +31,6 @@ builder.Services
     .ConfigureApplication()
     .ConfigureInfrastructure();
 
-builder.Services.AddOpenTelemetry()
-    .WithTracing(tracing =>
-    {
-        tracing.AddSource("MongoDB.Driver.Core.Extensions.DiagnosticSources");
-    });
-
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())

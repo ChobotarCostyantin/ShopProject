@@ -13,7 +13,7 @@ namespace Orders.BLL.Features.Orders.DTOs.Responces
         DateTime DeliveryDate,
         decimal TotalPrice,
         Status Status,
-        DateTimeOffset CreatedAt,
+        DateTime CreatedAt,
         OrderItemDto[] OrderItems
     );
 }

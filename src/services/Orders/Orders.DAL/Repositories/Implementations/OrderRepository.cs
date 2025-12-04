@@ -241,7 +241,9 @@ namespace Orders.DAL.Repositories.Implementations
 
             var cmd = new CommandDefinition(
                 "SELECT COUNT(DISTINCT o.order_id) FROM orders o JOIN order_items oi ON o.order_id = oi.order_id WHERE oi.product_id = @ProductId",
-                new { Id = productId },
+
+                new { ProductId = productId },
+
                 cancellationToken: cancellationToken,
                 transaction: Transaction
             );

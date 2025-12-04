@@ -21,47 +21,36 @@ namespace Orders.BLL.Features.OrderShipping.Services.Implementations
         private readonly ILogger<OrderShippingService> _logger;
         private readonly IMapper _mapper;
 
-        private readonly IValidator<GetOrderShippingByIdRequest> _getOrderShippingByIdRequestValidator;
-        private readonly IValidator<GetOrderShippingByOrderIdRequest> _getOrderShippingByOrderIdRequestValidator;
         private readonly IValidator<CreateOrderShippingRequest> _createOrderShippingRequestValidator;
         private readonly IValidator<UpdateOrderShippingRequest> _updateOrderShippingRequestValidator;
-        private readonly IValidator<DeleteOrderShippingRequest> _deleteOrderShippingRequestValidator;
 
         public OrderShippingService(
             IUnitOfWork unitOfWork,
             ILogger<OrderShippingService> logger,
             IMapper mapper,
-            IValidator<GetOrderShippingByIdRequest> getOrderShippingByIdRequestValidator,
-            IValidator<GetOrderShippingByOrderIdRequest> getOrderShippingByOrderIdRequestValidator,
             IValidator<CreateOrderShippingRequest> createOrderShippingRequestValidator,
-            IValidator<UpdateOrderShippingRequest> updateOrderShippingRequestValidator,
-            IValidator<DeleteOrderShippingRequest> deleteOrderShippingRequestValidator
+            IValidator<UpdateOrderShippingRequest> updateOrderShippingRequestValidator
             )
         {
             _unitOfWork = unitOfWork;
             _logger = logger;
             _mapper = mapper;
-            _getOrderShippingByIdRequestValidator = getOrderShippingByIdRequestValidator;
-            _getOrderShippingByOrderIdRequestValidator = getOrderShippingByOrderIdRequestValidator;
             _createOrderShippingRequestValidator = createOrderShippingRequestValidator;
             _updateOrderShippingRequestValidator = updateOrderShippingRequestValidator;
-            _deleteOrderShippingRequestValidator = deleteOrderShippingRequestValidator;
         }
 
-        public async Task<Result<OrderShippingDto?>> GetOrderShippingByIdAsync(GetOrderShippingByIdRequest request, CancellationToken cancellationToken)
+        public async Task<Result<OrderShippingDto?>> GetOrderShippingByIdAsync(Guid shippingId, CancellationToken cancellationToken)
         {
-            await _getOrderShippingByIdRequestValidator.ValidateAndThrowAsync(request, cancellationToken);
-
             try
             {
                 await _unitOfWork.BeginTransactionAsync();
 
-                var orderShipping = await _unitOfWork.OrderShippingRepository.GetOrderShippingAsync(request.ShippingId, cancellationToken);
+                var orderShipping = await _unitOfWork.OrderShippingRepository.GetOrderShippingAsync(shippingId, cancellationToken);
 
                 await _unitOfWork.CommitTransactionAsync();
 
                 return orderShipping is null
-                    ? Result<OrderShippingDto?>.NotFound(key: request.ShippingId, entityName: nameof(Domain.Models.OrderShipping))
+                    ? Result<OrderShippingDto?>.NotFound(key: shippingId, entityName: nameof(Domain.Models.OrderShipping))
                     : Result<OrderShippingDto?>.Ok(_mapper.Map<OrderShippingDto>(orderShipping));
             }
             catch (DbException e)
@@ -72,20 +61,18 @@ namespace Orders.BLL.Features.OrderShipping.Services.Implementations
             }
         }
 
-        public async Task<Result<OrderShippingDto?>> GetOrderShippingByOrderIdAsync(GetOrderShippingByOrderIdRequest request, CancellationToken cancellationToken)
+        public async Task<Result<OrderShippingDto?>> GetOrderShippingByOrderIdAsync(Guid orderId, CancellationToken cancellationToken)
         {
-            await _getOrderShippingByOrderIdRequestValidator.ValidateAndThrowAsync(request, cancellationToken);
-
             try
             {
                 await _unitOfWork.BeginTransactionAsync();
 
-                var orderShipping = await _unitOfWork.OrderShippingRepository.GetOrderShippingByOrderIdAsync(request.OrderId, cancellationToken);
+                var orderShipping = await _unitOfWork.OrderShippingRepository.GetOrderShippingByOrderIdAsync(orderId, cancellationToken);
 
                 await _unitOfWork.CommitTransactionAsync();
 
                 return orderShipping is null
-                    ? Result<OrderShippingDto?>.NotFound(alternativeMessage: $"Order shipping for order with id of {request.OrderId} was not found")
+                    ? Result<OrderShippingDto?>.NotFound(alternativeMessage: $"Order shipping for order with id of {orderId} was not found")
                     : Result<OrderShippingDto?>.Ok(_mapper.Map<OrderShippingDto>(orderShipping));
             }
             catch (DbException e)
@@ -98,10 +85,14 @@ namespace Orders.BLL.Features.OrderShipping.Services.Implementations
 
         public async Task<Result<OrderShippingDto>> CreateOrderShippingAsync(CreateOrderShippingRequest request, CancellationToken cancellationToken)
         {
-            await _createOrderShippingRequestValidator.ValidateAndThrowAsync(request, cancellationToken);
-
             try
             {
+                var validationResult = await _createOrderShippingRequestValidator.ValidateAsync(request, cancellationToken);
+                if (!validationResult.IsValid)
+                {
+                    return Result<OrderShippingDto>.BadRequest(validationResult.Errors[0].ErrorMessage);
+                }
+
                 await _unitOfWork.BeginTransactionAsync();
 
                 var order = await _unitOfWork.OrderRepository.GetOrderAsync(request.OrderId, cancellationToken);
@@ -130,10 +121,14 @@ namespace Orders.BLL.Features.OrderShipping.Services.Implementations
 
         public async Task<Result<OrderShippingDto>> UpdateOrderShippingAsync(Guid shippingId, UpdateOrderShippingRequest request, CancellationToken cancellationToken)
         {
-            await _updateOrderShippingRequestValidator.ValidateAndThrowAsync(request, cancellationToken);
-
             try
             {
+                var validationResult = await _updateOrderShippingRequestValidator.ValidateAsync(request, cancellationToken);
+                if (!validationResult.IsValid)
+                {
+                    return Result<OrderShippingDto>.BadRequest(validationResult.Errors[0].ErrorMessage);
+                }
+
                 await _unitOfWork.BeginTransactionAsync();
                 
                 var orderShipping = await _unitOfWork.OrderShippingRepository.GetOrderShippingAsync(shippingId, cancellationToken);
@@ -163,8 +158,6 @@ namespace Orders.BLL.Features.OrderShipping.Services.Implementations
 
         public async Task<Result<bool>> DeleteOrderShippingAsync(DeleteOrderShippingRequest request, CancellationToken cancellationToken)
         {
-            await _deleteOrderShippingRequestValidator.ValidateAndThrowAsync(request, cancellationToken);
-
             try
             {
                 await _unitOfWork.BeginTransactionAsync();

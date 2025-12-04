@@ -53,7 +53,7 @@ namespace Orders.DAL.Repositories.Implementations
                 {
                     p_shipping_id = orderShipping.ShippingId,
                     p_order_id = orderShipping.OrderId,
-                    p_adress_line = orderShipping.AddressLine,
+                    p_address_line = orderShipping.AddressLine,
                     p_city = orderShipping.City,
                     p_postal_code = orderShipping.PostalCode
                 },

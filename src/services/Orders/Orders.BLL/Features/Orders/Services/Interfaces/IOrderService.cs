@@ -13,7 +13,7 @@ namespace Orders.BLL.Features.Orders.Services.Interfaces
 {
     public interface IOrderService
     {
-        Task<Result<OrderDto?>> GetOrderByIdAsync(GetOrderByIdRequest request, CancellationToken cancellationToken);
+        Task<Result<OrderDto?>> GetOrderByIdAsync(Guid orderId, CancellationToken cancellationToken);
         Task<Result<PaginationResult<OrderDto>>> GetOrdersByCustomerIdAsync(Guid customerId, GetOrdersByCustomerIdRequest request, CancellationToken cancellationToken);
         Task<Result<PaginationResult<OrderDto>>> GetOrdersByProductIdAsync(Guid productId, GetOrdersByProductIdRequest request, CancellationToken cancellationToken);
         Task<Result<PaginationResult<OrderDto>>> GetOrdersAsync(GetOrdersRequest request, CancellationToken cancellationToken);

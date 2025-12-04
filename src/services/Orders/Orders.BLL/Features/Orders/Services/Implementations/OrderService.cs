@@ -22,44 +22,36 @@ namespace Orders.BLL.Features.Orders.Services.Implementations
         private readonly IUnitOfWork _unitOfWork;
         private readonly ILogger<OrderService> _logger;
         private readonly IMapper _mapper;
-        private readonly IValidator<GetOrderByIdRequest> _getOrderByIdRequestValidator;
         private readonly IValidator<CreateOrderRequest> _createOrderRequestValidator;
         private readonly IValidator<UpdateOrderRequest> _updateOrderRequestValidator;
-        private readonly IValidator<DeleteOrderRequest> _deleteOrderRequestValidator;
 
         public OrderService(
             IUnitOfWork unitOfWork,
             ILogger<OrderService> logger,
             IMapper mapper,
-            IValidator<GetOrderByIdRequest> getOrderByIdRequestValidator,
             IValidator<CreateOrderRequest> createOrderRequestValidator,
-            IValidator<UpdateOrderRequest> updateOrderRequestValidator,
-            IValidator<DeleteOrderRequest> deleteOrderRequestValidator
+            IValidator<UpdateOrderRequest> updateOrderRequestValidator
             )
         {
             _unitOfWork = unitOfWork;
             _logger = logger;
             _mapper = mapper;
-            _getOrderByIdRequestValidator = getOrderByIdRequestValidator;
             _createOrderRequestValidator = createOrderRequestValidator;
             _updateOrderRequestValidator = updateOrderRequestValidator;
-            _deleteOrderRequestValidator = deleteOrderRequestValidator;
         }
 
-        public async Task<Result<OrderDto?>> GetOrderByIdAsync(GetOrderByIdRequest request, CancellationToken cancellationToken)
+        public async Task<Result<OrderDto?>> GetOrderByIdAsync(Guid orderId, CancellationToken cancellationToken)
         {
-            await _getOrderByIdRequestValidator.ValidateAndThrowAsync(request, cancellationToken);
-
             try
             {
                 await _unitOfWork.BeginTransactionAsync();
 
-                var order = await _unitOfWork.OrderRepository.GetOrderAsync(request.OrderId, cancellationToken);
+                var order = await _unitOfWork.OrderRepository.GetOrderAsync(orderId, cancellationToken);
 
                 await _unitOfWork.CommitTransactionAsync();
 
                 return order is null
-                    ? Result<OrderDto?>.NotFound(key: request.OrderId, entityName: nameof(Domain.Models.Order))
+                    ? Result<OrderDto?>.NotFound(key: orderId, entityName: nameof(Domain.Models.Order))
                     : Result<OrderDto?>.Ok(_mapper.Map<OrderDto>(order));
             }
             catch (DbException e)
@@ -152,10 +144,14 @@ namespace Orders.BLL.Features.Orders.Services.Implementations
         }
         public async Task<Result<OrderDto>> CreateOrderAsync(CreateOrderRequest request, CancellationToken cancellationToken)
         {
-            await _createOrderRequestValidator.ValidateAndThrowAsync(request, cancellationToken);
-
             try
             {
+                var validationResult = await _createOrderRequestValidator.ValidateAsync(request, cancellationToken);
+                if (!validationResult.IsValid)
+                {
+                    return Result<OrderDto>.BadRequest(validationResult.Errors[0].ErrorMessage);
+                }
+
                 await _unitOfWork.BeginTransactionAsync();
 
                 var order = _mapper.Map<Domain.Models.Order>(request);
@@ -180,10 +176,14 @@ namespace Orders.BLL.Features.Orders.Services.Implementations
 
         public async Task<Result<OrderDto>> UpdateOrderAsync(Guid orderId, UpdateOrderRequest request, CancellationToken cancellationToken)
         {
-            await _updateOrderRequestValidator.ValidateAndThrowAsync(request, cancellationToken);
-
             try
             {
+                var validationResult = await _updateOrderRequestValidator.ValidateAsync(request, cancellationToken);
+                if (!validationResult.IsValid)
+                {
+                    return Result<OrderDto>.BadRequest(validationResult.Errors[0].ErrorMessage);
+                }
+
                 await _unitOfWork.BeginTransactionAsync();
 
                 var order = await _unitOfWork.OrderRepository.GetOrderAsync(orderId, cancellationToken);
@@ -212,8 +212,6 @@ namespace Orders.BLL.Features.Orders.Services.Implementations
 
         public async Task<Result<bool>> DeleteOrderAsync(DeleteOrderRequest request, CancellationToken cancellationToken)
         {
-            await _deleteOrderRequestValidator.ValidateAndThrowAsync(request, cancellationToken);
-
             try
             {
                 await _unitOfWork.BeginTransactionAsync();

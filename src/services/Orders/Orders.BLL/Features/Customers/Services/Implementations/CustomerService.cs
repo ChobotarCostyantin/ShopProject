@@ -38,7 +38,6 @@ namespace Orders.BLL.Features.Customers.Services.Implementations
 
         public async Task<Result<CustomerDto>> CreateCustomerAsync(CreateCustomerRequest request, CancellationToken cancellationToken)
         {
-            // await _createCustomerRequestValidator.ValidateAndThrowAsync(request, cancellationToken);
             try
             {
                 var validationResult = await _createCustomerRequestValidator.ValidateAsync(request, cancellationToken);
@@ -66,25 +65,18 @@ namespace Orders.BLL.Features.Customers.Services.Implementations
             }
         }
 
-        public async Task<Result<CustomerDto>> GetCustomerByIdAsync(GetCustomerByIdRequest request, CancellationToken cancellationToken)
+        public async Task<Result<CustomerDto>> GetCustomerByIdAsync(Guid customerId, CancellationToken cancellationToken)
         {
-            // await _getCustomerByIdRequestValidator.ValidateAndThrowAsync(request, cancellationToken);
             try
             {
-                // var validationResult = await _getCustomerByIdRequestValidator.ValidateAsync(request, cancellationToken);
-                // if (!validationResult.IsValid)
-                // {
-                //     return Result<CustomerDto>.BadRequest(validationResult.Errors[0].ErrorMessage);
-                // }
-
                 await _unitOfWork.BeginTransactionAsync();
 
-                var customer = await _unitOfWork.CustomerRepository.GetCustomerAsync(request.CustomerId, cancellationToken);
+                var customer = await _unitOfWork.CustomerRepository.GetCustomerAsync(customerId, cancellationToken);
 
                 await _unitOfWork.CommitTransactionAsync();
 
                 return customer is null
-                    ? Result<CustomerDto>.NotFound(key: request.CustomerId, entityName: nameof(Customer))
+                    ? Result<CustomerDto>.NotFound(key: customerId, entityName: nameof(Customer))
                     : Result<CustomerDto>.Ok(_mapper.Map<CustomerDto>(customer));
             }
             catch (DbException e)
@@ -97,9 +89,14 @@ namespace Orders.BLL.Features.Customers.Services.Implementations
 
         public async Task<Result<CustomerDto>> UpdateCustomerAsync(Guid customerId, UpdateCustomerRequest request, CancellationToken cancellationToken)
         {
-            // await _updateCustomerRequestValidator.ValidateAndThrowAsync(request, cancellationToken);
             try
             {
+                var validationResult = await _updateCustomerRequestValidator.ValidateAsync(request, cancellationToken);
+                if (!validationResult.IsValid)
+                {
+                    return Result<CustomerDto>.BadRequest(validationResult.Errors[0].ErrorMessage);
+                }
+
                 await _unitOfWork.BeginTransactionAsync();
 
                 var customer = await _unitOfWork.CustomerRepository.GetCustomerAsync(customerId, cancellationToken);
@@ -107,12 +104,6 @@ namespace Orders.BLL.Features.Customers.Services.Implementations
                 {
                     await _unitOfWork.CommitTransactionAsync();
                     return Result<CustomerDto>.NotFound(key: customerId, entityName: nameof(Customer));
-                }
-
-                var validationResult = await _updateCustomerRequestValidator.ValidateAsync(request, cancellationToken);
-                if (!validationResult.IsValid)
-                {
-                    return Result<CustomerDto>.BadRequest(validationResult.Errors[0].ErrorMessage);
                 }
 
                 customer.FullName = request.FullName;
@@ -131,21 +122,20 @@ namespace Orders.BLL.Features.Customers.Services.Implementations
             }
         }
 
-        public async Task<Result<bool>> DeleteCustomerAsync(DeleteCustomerRequest request, CancellationToken cancellationToken)
+        public async Task<Result<bool>> DeleteCustomerAsync(Guid customerId, CancellationToken cancellationToken)
         {
-            // await _deleteCustomerRequestValidator.ValidateAndThrowAsync(request, cancellationToken);
             try
             {
                 await _unitOfWork.BeginTransactionAsync();
 
-                var customer = await _unitOfWork.CustomerRepository.GetCustomerAsync(request.CustomerId, cancellationToken);
+                var customer = await _unitOfWork.CustomerRepository.GetCustomerAsync(customerId, cancellationToken);
                 if (customer is null)
                 {
                     await _unitOfWork.CommitTransactionAsync();
-                    return Result<bool>.NotFound(key: request.CustomerId, entityName: nameof(Customer));
+                    return Result<bool>.NotFound(key: customerId, entityName: nameof(Customer));
                 }
 
-                await _unitOfWork.CustomerRepository.DeleteCustomerAsync(request.CustomerId, cancellationToken);
+                await _unitOfWork.CustomerRepository.DeleteCustomerAsync(customerId, cancellationToken);
 
                 await _unitOfWork.CommitTransactionAsync();
 

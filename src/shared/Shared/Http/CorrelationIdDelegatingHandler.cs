@@ -18,13 +18,10 @@ namespace Shared.Http
 
         if (context != null)
         {
-            // Шукаємо CorrelationId у поточному запиті
             if (context.Request.Headers.TryGetValue("X-Correlation-Id", out var correlationId))
             {
-                // Додаємо його у вихідний запит до іншого мікросервісу
                 request.Headers.Add("X-Correlation-Id", correlationId.ToString());
             }
-            // Якщо заголовка немає, middleware згенерував його і поклав у Items?
             else if (context.Items.TryGetValue("X-Correlation-Id", out var correlationIdItem))
             {
                 request.Headers.Add("X-Correlation-Id", correlationIdItem?.ToString());
