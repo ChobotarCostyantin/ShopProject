@@ -1,11 +1,7 @@
 using Shared.Middlewares;
-// using ServiceDefaults; // <-- УДАЛИТЕ ИЛИ ЗАКОММЕНТИРУЙТЕ ЭТУ СТРОКУ
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Метод AddServiceDefaults находится в пространстве имен Microsoft.Extensions.Hosting,
-// которое обычно подключено автоматически. Если возникнет ошибка здесь, добавьте:
-// using Microsoft.Extensions.Hosting; 
 builder.AddServiceDefaults();
 
 builder.Services.AddReverseProxy()
@@ -15,8 +11,25 @@ builder.Services.AddReverseProxy()
 var app = builder.Build();
 
 app.MapDefaultEndpoints();
-
 app.UseMiddleware<CorrelationIdMiddleware>();
+
+app.MapHealthChecks("/health-check", new Microsoft.AspNetCore.Diagnostics.HealthChecks.HealthCheckOptions
+{
+    ResponseWriter = async (context, report) =>
+    {
+        context.Response.ContentType = "application/json";
+        var result = new
+        {
+            status = report.Status.ToString(),
+            checks = report.Entries.Select(e => new
+            {
+                name = e.Key,
+                status = e.Value.Status.ToString(),
+            })
+        };
+        await context.Response.WriteAsJsonAsync(result);
+    }
+});
 
 app.MapReverseProxy();
 

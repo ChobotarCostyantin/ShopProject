@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Builder;
 using Serilog;
 using Serilog.Events;
 using Serilog.Exceptions;
+using Serilog.Formatting.Compact;
 
 namespace Shared.Logging;
 
@@ -17,8 +18,7 @@ public static class LoggingConfiguration
                 .Enrich.FromLogContext()
                 .Enrich.WithProperty("Application", context.HostingEnvironment.ApplicationName)
                 .Enrich.WithProperty("Environment", context.HostingEnvironment.EnvironmentName)
-                .WriteTo.Console(
-                    outputTemplate: "[{Timestamp:HH:mm:ss} {Level:u3}] {SourceContext}: {Message:lj}{NewLine}{Exception}")
+                .WriteTo.Console(new CompactJsonFormatter()) 
                 .WriteTo.OpenTelemetry(options =>
                 {
                     options.Endpoint = context.Configuration["OTEL_EXPORTER_OTLP_ENDPOINT"] ?? "http://localhost:4317";
@@ -29,7 +29,7 @@ public static class LoggingConfiguration
                     };
                 });
 
-            // Set minimum level from configuration or default to Information
+            // (Решта коду без змін...)
             var minLevel = context.Configuration["Serilog:MinimumLevel:Default"];
             if (Enum.TryParse<LogEventLevel>(minLevel, out var level))
             {
@@ -40,7 +40,6 @@ public static class LoggingConfiguration
                 configuration.MinimumLevel.Information();
             }
 
-            // Override specific namespaces
             configuration
                 .MinimumLevel.Override("Microsoft", LogEventLevel.Warning)
                 .MinimumLevel.Override("Microsoft.AspNetCore", LogEventLevel.Warning)

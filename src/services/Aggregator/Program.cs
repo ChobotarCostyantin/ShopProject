@@ -6,24 +6,22 @@ using Shared.DTOs;
 using Shared.Http;
 using Shared.Middlewares;
 using SocialAndReviews.Application.Reviews.DTOs.Responces;
-using System.Diagnostics;
+using Microsoft.AspNetCore.Mvc;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddHealthChecks()
-    .AddUrlGroup(new Uri("http://http://orders-api/health"), name: "orders-api", tags: ["api"])
+    .AddUrlGroup(new Uri("http://orders-api/health"), name: "orders-api", tags: ["api"])
     .AddUrlGroup(new Uri("http://catalog-api/health"), name: "catalog-api", tags: ["api"])
     .AddUrlGroup(new Uri("http://social-and-reviews-api/health"), name: "social-and-reviews-api", tags: ["api"]);
 
 builder.AddServiceDefaults();
 
-// 1. Потрібно для доступу до HttpContext у DelegatingHandler
 builder.Services.AddHttpContextAccessor();
 
 // 2. Реєструємо хендлер
 builder.Services.AddTransient<CorrelationIdDelegatingHandler>();
 
-// 3. Реєструємо Typed Clients з прив'язкою до handler та BaseAddress
 builder.Services.AddHttpClient<CatalogClient>(client =>
     client.BaseAddress = new Uri("http://catalog-api"))
     .AddHttpMessageHandler<CorrelationIdDelegatingHandler>();
@@ -64,11 +62,25 @@ app.MapGet("/api/aggregator/full-product-data/{productId}", async (
     SocialAndReviewsClient socialClient,
     OrdersClient ordersClient,
     Guid productId,
+    ILogger<Program> logger,
     CancellationToken ct) =>
 {
-    var productTask = catalogClient.GetProductByIdAsync(productId, ct);
-    var reviewsTask = socialClient.GetReviewsByProductIdAsync(productId, ct);
-    var ordersTask = ordersClient.GetOrdersByProductIdAsync(productId, ct);
+    async Task<T?> ExecuteSafelyAsync<T>(Func<Task<T?>> action, string serviceName)
+    {
+        try
+        {
+            return await action();
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Не вдалося отримати дані з {ServiceName}", serviceName);
+            return default;
+        }
+    }
+
+    var productTask = ExecuteSafelyAsync(() => catalogClient.GetProductByIdAsync(productId, ct), "Catalog");
+    var reviewsTask = ExecuteSafelyAsync(() => socialClient.GetReviewsByProductIdAsync(productId, ct), "SocialAndReviews");
+    var ordersTask = ExecuteSafelyAsync(() => ordersClient.GetOrdersByProductIdAsync(productId, ct), "Orders");
 
     await Task.WhenAll(productTask, reviewsTask, ordersTask);
 
@@ -77,7 +89,10 @@ app.MapGet("/api/aggregator/full-product-data/{productId}", async (
     var ordersPagination = ordersTask.Result;
 
     if (product is null)
+    {
+        logger.LogWarning("Для ID відсутні дані продукту: {ProductId}", productId);
         return Results.NotFound();
+    }
 
     var reviewArray = reviewsPagination?.Entities ?? [];
     var orderArray = ordersPagination?.Entities ?? [];
