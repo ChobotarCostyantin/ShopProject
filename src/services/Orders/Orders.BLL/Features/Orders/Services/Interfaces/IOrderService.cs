@@ -15,6 +15,7 @@ namespace Orders.BLL.Features.Orders.Services.Interfaces
     {
         Task<Result<OrderDto?>> GetOrderByIdAsync(GetOrderByIdRequest request, CancellationToken cancellationToken);
         Task<Result<PaginationResult<OrderDto>>> GetOrdersByCustomerIdAsync(Guid customerId, GetOrdersByCustomerIdRequest request, CancellationToken cancellationToken);
+        Task<Result<PaginationResult<OrderDto>>> GetOrdersByProductIdAsync(Guid productId, GetOrdersByProductIdRequest request, CancellationToken cancellationToken);
         Task<Result<PaginationResult<OrderDto>>> GetOrdersAsync(GetOrdersRequest request, CancellationToken cancellationToken);
         Task<Result<OrderDto>> CreateOrderAsync(CreateOrderRequest request, CancellationToken cancellationToken);
         Task<Result<OrderDto>> UpdateOrderAsync(Guid orderId, UpdateOrderRequest request, CancellationToken cancellationToken);

@@ -38,6 +38,14 @@ namespace Orders.API.Controllers
             return (await _orderService.GetOrdersByCustomerIdAsync(customerId, request, cancellationToken)).ToApiResponse();
         }
 
+        [HttpGet("orders/{productId:guid}/orders")]
+        [ProducesResponseType(typeof (PaginationResult<OrderDto>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> GetByProductIdAsync([FromRoute] Guid productId, [FromQuery] GetOrdersByProductIdRequest request, CancellationToken cancellationToken)
+        {
+            return (await _orderService.GetOrdersByProductIdAsync(productId, request, cancellationToken)).ToApiResponse();
+        }
+
         [HttpGet] 
         [ProducesResponseType(typeof (PaginationResult<OrderDto>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]

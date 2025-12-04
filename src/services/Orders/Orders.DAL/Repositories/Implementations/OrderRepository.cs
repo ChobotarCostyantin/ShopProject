@@ -104,6 +104,37 @@ namespace Orders.DAL.Repositories.Implementations
             return await QueryOrdersAsync(sql, new { Skip = skip, Take = pageSize }, cancellationToken);
         }
 
+
+        public async Task<List<Order>> GetOrdersByProductIdAsync(Guid productId, int pageSize, int pageNumber, CancellationToken cancellationToken)
+        {
+            var skip = (pageNumber - 1) * pageSize;
+
+            const string sql = """
+                SELECT 
+                    o.order_id AS OrderId, o.customer_id AS CustomerId, o.delivery_date AS DeliveryDate,
+                    o.total_price AS TotalPrice, o.status AS Status, o.created_at AS CreatedAt,
+
+                    oi.order_item_id AS OrderItemId, oi.order_id AS OrderId, oi.product_id AS ProductId,
+                    oi.quantity AS Quantity
+                FROM orders o
+                INNER JOIN (
+                    SELECT DISTINCT o.order_id, o.created_at
+                    FROM orders o
+                    JOIN order_items items ON o.order_id = items.order_id
+                    WHERE items.product_id = @ProductId
+                    ORDER BY o.created_at DESC
+                    OFFSET @Skip ROWS FETCH NEXT @Take ROWS ONLY
+                ) AS p ON p.order_id = o.order_id
+                LEFT JOIN order_items oi ON o.order_id = oi.order_id
+                ORDER BY o.created_at DESC, oi.order_item_id
+                """;
+
+            return await QueryOrdersAsync(
+                sql,
+                new { ProductId = productId, Skip = skip, Take = pageSize },
+                cancellationToken);
+        }
+
         public async Task<List<Order>> GetOrdersByCustomerIdAsync(Guid customerId, int pageSize, int pageNumber, CancellationToken cancellationToken)
         {
             var skip = (pageNumber - 1) * pageSize;
@@ -200,6 +231,20 @@ namespace Orders.DAL.Repositories.Implementations
                 new { Id = customerId },
                 cancellationToken: cancellationToken,
                 transaction: Transaction);
+
+            return await Connection.ExecuteScalarAsync<long>(cmd);
+        }
+
+        public async Task<long> CountAllOrdersByProductIdAsync(Guid productId, CancellationToken cancellationToken)
+        {
+            ThrowIfConnectionOrTransactionIsUninitialized();
+
+            var cmd = new CommandDefinition(
+                "SELECT COUNT(DISTINCT o.order_id) FROM orders o JOIN order_items oi ON o.order_id = oi.order_id WHERE oi.product_id = @ProductId",
+                new { Id = productId },
+                cancellationToken: cancellationToken,
+                transaction: Transaction
+            );
 
             return await Connection.ExecuteScalarAsync<long>(cmd);
         }

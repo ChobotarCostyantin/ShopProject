@@ -1,38 +1,45 @@
 var builder = DistributedApplication.CreateBuilder(args);
 
+// --- Databases ---
 var ordersDb = builder.AddPostgres("orders-db")
     .WithDataVolume()
     .WithEnvironment("POSTGRES_HOST_AUTH_METHOD", "trust")
     .AddDatabase("ordersDb");
-
-var orderApi = builder.AddProject<Projects.Orders_API>("orders-api")
-    .WithReference(ordersDb)
-    .WithHttpEndpoint(port: 5001, name: "orders-http")
-    .WaitFor(ordersDb);
 
 var catalogDb = builder.AddPostgres("catalog-db")
     .WithDataVolume()
     .WithEnvironment("POSTGRES_HOST_AUTH_METHOD", "trust")
     .AddDatabase("catalogDb");
 
-var catalogApi = builder.AddProject<Projects.Catalog_API>("catalog-api")
-    .WithReference(catalogDb)
-    .WithHttpEndpoint(port: 5002, name: "catalog-http")
-    .WaitFor(catalogDb);
-
 var socialAndReviewsDb = builder.AddMongoDB("social-and-reviews-db")
     .WithDataVolume()
     .AddDatabase("socialAndReviewsDb");
 
+// --- Microservices ---
+var orderApi = builder.AddProject<Projects.Orders_API>("orders-api")
+    .WithReference(ordersDb)
+    .WaitFor(ordersDb);
+
+var catalogApi = builder.AddProject<Projects.Catalog_API>("catalog-api")
+    .WithReference(catalogDb)
+    .WaitFor(catalogDb);
+
 var socialAndReviewsApi = builder.AddProject<Projects.SocialAndReviews_API>("social-and-reviews-api")
     .WithReference(socialAndReviewsDb)
-    .WithHttpEndpoint(port: 5003, name: "social-and-reviews-http")
     .WaitFor(socialAndReviewsDb);
 
+// --- Aggregator ---
 var aggregator = builder.AddProject<Projects.Aggregator>("aggregator")
     .WithReference(orderApi)
     .WithReference(catalogApi)
+    .WithReference(socialAndReviewsApi);
+
+// --- API Gateway ---
+var apiGateway = builder.AddProject<Projects.ApiGateway>("api-gateway")
+    .WithReference(orderApi)
+    .WithReference(catalogApi)
     .WithReference(socialAndReviewsApi)
-    .WithHttpEndpoint(port: 5004, name: "aggregator-http");
+    .WithReference(aggregator)
+    .WithHttpEndpoint(port: 5000, name: "gateway-http");
 
 builder.Build().Run();

@@ -97,6 +97,33 @@ namespace Orders.BLL.Features.Orders.Services.Implementations
             }
         }
 
+        public async Task<Result<PaginationResult<OrderDto>>> GetOrdersByProductIdAsync(Guid productId, GetOrdersByProductIdRequest request, CancellationToken cancellationToken)
+        {
+            try
+            {
+                await _unitOfWork.BeginTransactionAsync();
+
+                var orders = await _unitOfWork.OrderRepository.GetOrdersByProductIdAsync(productId, request.PageSize, request.PageNumber, cancellationToken);
+                var totalCount = await _unitOfWork.OrderRepository.CountAllOrdersByProductIdAsync(productId, cancellationToken);
+
+                await _unitOfWork.CommitTransactionAsync();
+
+                return Result<PaginationResult<OrderDto>>.Ok(new PaginationResult<OrderDto>(
+                    orders.Select(x => _mapper.Map<OrderDto>(x)).ToArray(),
+                    totalCount,
+                    request.PageNumber,
+                    Math.Ceiling((decimal)totalCount / request.PageSize),
+                    request.PageSize
+                ));
+            }
+            catch (DbException e)
+            {
+                await _unitOfWork.RollbackTransactionAsync();
+                _logger.LogError(e, "Error occured during database operation");
+                throw e.ToInfrastructureException();
+            }
+        }
+
         public async Task<Result<PaginationResult<OrderDto>>> GetOrdersAsync(GetOrdersRequest request, CancellationToken cancellationToken)
         {
             try

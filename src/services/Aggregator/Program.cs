@@ -1,34 +1,45 @@
+using Aggregator.DTOs;
+using Aggregator.Services;
 using Catalog.BLL.DTOs.Products.Responces;
 using Orders.BLL.Features.Orders.DTOs.Responces;
 using Shared.DTOs;
+using Shared.Http;
+using Shared.Middlewares;
 using SocialAndReviews.Application.Reviews.DTOs.Responces;
+using System.Diagnostics;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddHealthChecks()
-    .AddUrlGroup(new Uri("http://order-api/health"), name: "order-api", tags: ["api"])
+    .AddUrlGroup(new Uri("http://http://orders-api/health"), name: "orders-api", tags: ["api"])
     .AddUrlGroup(new Uri("http://catalog-api/health"), name: "catalog-api", tags: ["api"])
     .AddUrlGroup(new Uri("http://social-and-reviews-api/health"), name: "social-and-reviews-api", tags: ["api"]);
 
 builder.AddServiceDefaults();
 
-builder.Services.AddHttpClient("order-api", client =>
-{
-    client.BaseAddress = new Uri("http://order-api");
-});
+// 1. Потрібно для доступу до HttpContext у DelegatingHandler
+builder.Services.AddHttpContextAccessor();
 
-builder.Services.AddHttpClient("catalog-api", client =>
-{
-    client.BaseAddress = new Uri("http://catalog-api");
-});
+// 2. Реєструємо хендлер
+builder.Services.AddTransient<CorrelationIdDelegatingHandler>();
 
-builder.Services.AddHttpClient("social-and-reviews-api", client =>
-{
-    client.BaseAddress = new Uri("http://social-and-reviews-api");
-});
+// 3. Реєструємо Typed Clients з прив'язкою до handler та BaseAddress
+builder.Services.AddHttpClient<CatalogClient>(client =>
+    client.BaseAddress = new Uri("http://catalog-api"))
+    .AddHttpMessageHandler<CorrelationIdDelegatingHandler>();
+
+builder.Services.AddHttpClient<OrdersClient>(client =>
+    client.BaseAddress = new Uri("http://orders-api"))
+    .AddHttpMessageHandler<CorrelationIdDelegatingHandler>();
+
+builder.Services.AddHttpClient<SocialAndReviewsClient>(client =>
+    client.BaseAddress = new Uri("http://social-and-reviews-api"))
+    .AddHttpMessageHandler<CorrelationIdDelegatingHandler>();
 
 var app = builder.Build();
+
 app.MapDefaultEndpoints();
+app.UseMiddleware<CorrelationIdMiddleware>();
 
 app.MapHealthChecks("/health-check", new Microsoft.AspNetCore.Diagnostics.HealthChecks.HealthCheckOptions
 {
@@ -48,19 +59,41 @@ app.MapHealthChecks("/health-check", new Microsoft.AspNetCore.Diagnostics.Health
     }
 });
 
-app.MapGet("/api/full-product-data/{productId}", async (
-    IHttpClientFactory httpClientFactory,
-    Guid productId) =>
+app.MapGet("/api/aggregator/full-product-data/{productId}", async (
+    CatalogClient catalogClient,
+    SocialAndReviewsClient socialClient,
+    OrdersClient ordersClient,
+    Guid productId,
+    CancellationToken ct) =>
 {
-    var orderClient = httpClientFactory.CreateClient("order-api");
-    var catalogClient = httpClientFactory.CreateClient("catalog-api");
-    var socialAndReviewsClient = httpClientFactory.CreateClient("social-and-reviews-api");
+    var productTask = catalogClient.GetProductByIdAsync(productId, ct);
+    var reviewsTask = socialClient.GetReviewsByProductIdAsync(productId, ct);
+    var ordersTask = ordersClient.GetOrdersByProductIdAsync(productId, ct);
 
-    var product = await catalogClient.GetFromJsonAsync<ProductDto>($"api/catalog/products/{productId}");
-    var orders = await orderClient.GetFromJsonAsync<List<OrderDto>>($"api/orders/orders/{productId}");
-    var reviews = await socialAndReviewsClient.GetFromJsonAsync<List<ReviewDto>>($"api/social-and-reviews/reviews/{productId}");
+    await Task.WhenAll(productTask, reviewsTask, ordersTask);
 
-    return Results.Ok(new {product, orders, reviews});
+    var product = productTask.Result;
+    var reviewsPagination = reviewsTask.Result;
+    var ordersPagination = ordersTask.Result;
+
+    if (product is null)
+        return Results.NotFound();
+
+    var reviewArray = reviewsPagination?.Entities ?? [];
+    var orderArray = ordersPagination?.Entities ?? [];
+
+    var averageRating = reviewArray.Length > 0
+        ? reviewArray.Average(r => r.Rating)
+        : 0;
+
+    var result = new FullProductDataDto(
+        Product: product,
+        Reviews: reviewArray,
+        AverageRating: averageRating,
+        Orders: orderArray
+    );
+
+    return Results.Ok(result);
 });
 
 app.Run();

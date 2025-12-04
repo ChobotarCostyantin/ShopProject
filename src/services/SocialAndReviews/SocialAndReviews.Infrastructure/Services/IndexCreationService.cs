@@ -49,7 +49,7 @@ namespace SocialAndReviews.Infrastructure.Services
                 new CreateIndexModel<Review>(
                 Builders<Review>.IndexKeys
                     .Ascending(r => r.ProductId) // Equality
-                    .Descending(r => r.Rating.Value) // Sort / Range
+                    .Descending(r => r.Rating) // Sort / Range
                     .Descending(r => r.CreatedAt), // Sort (вторинний)
                     new CreateIndexOptions { Name = "ProductId_Rating_CreatedAt" }
 )
