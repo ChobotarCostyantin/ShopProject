@@ -29,4 +29,10 @@ var socialAndReviewsApi = builder.AddProject<Projects.SocialAndReviews_API>("soc
     .WithHttpEndpoint(port: 5003, name: "social-and-reviews-http")
     .WaitFor(socialAndReviewsDb);
 
+var aggregator = builder.AddProject<Projects.Aggregator>("aggregator")
+    .WithReference(orderApi)
+    .WithReference(catalogApi)
+    .WithReference(socialAndReviewsApi)
+    .WithHttpEndpoint(port: 5004, name: "aggregator-http");
+
 builder.Build().Run();

@@ -27,17 +27,17 @@ namespace SocialAndReviews.Infrastructure.Database
 
         public async Task SeedAsync()
         {
-            await SeedUserProfilesAsync();
-            await SeedReviewsAsync();
+            await SeedDatabaseAsync();
         }
 
-        private async Task SeedUserProfilesAsync()
+        public async Task SeedDatabaseAsync()
         {
             // Ідемпотентність: перевіряємо, чи є дані
-            var count = await _context.UserProfiles.CountDocumentsAsync(FilterDefinition<UserProfile>.Empty);
-            if (count > 0) return;
+            var userCount = await _context.UserProfiles.CountDocumentsAsync(FilterDefinition<UserProfile>.Empty);
+            var reviewCount = await _context.Reviews.CountDocumentsAsync(FilterDefinition<Review>.Empty);
+            if (userCount > 0 && reviewCount > 0) return;
 
-            _logger.LogInformation("Seeding UserProfiles...");
+            _logger.LogInformation("Seeding user profiles...");
 
             var users = new List<UserProfile>
             {
@@ -46,29 +46,24 @@ namespace SocialAndReviews.Infrastructure.Database
                 new UserProfile("TechGuru")
             };
 
-            // Використання BulkWrite для ефективності
-            var writes = users.Select(u => new InsertOneModel<UserProfile>(u)).ToList();
-            await _context.UserProfiles.BulkWriteAsync(writes);
-        }
+            var userWrites = users.Select(u => new InsertOneModel<UserProfile>(u)).ToList();
 
-        private async Task SeedReviewsAsync()
-        {
-            var count = await _context.Reviews.CountDocumentsAsync(FilterDefinition<Review>.Empty);
-            if (count > 0) return;
+            _logger.LogInformation("Seeding reviews...");
 
-            _logger.LogInformation("Seeding Reviews...");
 
-            var author1 = new AuthorSnapshot(Guid.Parse("11111111-1111-1111-1111-111111111111"), "AlexReviewer");
+            var author1 = new AuthorSnapshot(users[0].Id, users[0].Nickname);
+            var author2 = new AuthorSnapshot(users[1].Id, users[1].Nickname);
             var productId = Guid.Parse("11111111-1111-1111-1111-111111111111"); // iPhone X з каталогу
 
             var reviews = new List<Review>
             {
                 new Review(productId, author1, new Rating(5), "Great phone!"),
-                new Review(productId, author1, new Rating(4), "Good, but battery life could be better.")
+                new Review(productId, author2, new Rating(4), "Good, but battery life could be better.")
             };
 
-            var writes = reviews.Select(r => new InsertOneModel<Review>(r)).ToList();
-            await _context.Reviews.BulkWriteAsync(writes);
+            var reviewWrites = reviews.Select(r => new InsertOneModel<Review>(r)).ToList();
+
+            await Task.WhenAll(_context.UserProfiles.BulkWriteAsync(userWrites), _context.Reviews.BulkWriteAsync(reviewWrites));
         }
     }
 }

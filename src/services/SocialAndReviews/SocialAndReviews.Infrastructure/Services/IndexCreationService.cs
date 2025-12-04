@@ -40,9 +40,19 @@ namespace SocialAndReviews.Infrastructure.Services
                 ),
                 // Text index for search
                 new CreateIndexModel<Review>(
-                    reviewBuilder.Text(r => r.Text),
-                    new CreateIndexOptions { Name = "Text_Content" }
-                )
+                Builders<Review>.IndexKeys
+                    .Text(r => r.Text) // Текст відгуку
+                    .Text("Comments.Text"), // Текст коментарів (вкладений масив)
+                    new CreateIndexOptions { Name = "FullText_Search_All" }
+                ),
+                // Compound index
+                new CreateIndexModel<Review>(
+                Builders<Review>.IndexKeys
+                    .Ascending(r => r.ProductId) // Equality
+                    .Descending(r => r.Rating.Value) // Sort / Range
+                    .Descending(r => r.CreatedAt), // Sort (вторинний)
+                    new CreateIndexOptions { Name = "ProductId_Rating_CreatedAt" }
+)
             };
             await _context.Reviews.Indexes.CreateManyAsync(reviewIndexes);
 

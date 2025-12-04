@@ -12,16 +12,12 @@ namespace SocialAndReviews.Infrastructure.Serializers
     {
         public override void Serialize(BsonSerializationContext context, BsonSerializationArgs args, Rating value)
         {
-            context.Writer.WriteStartDocument();
             context.Writer.WriteInt32(value.Value);
-            context.Writer.WriteEndDocument();
         }
 
         public override Rating Deserialize(BsonDeserializationContext context, BsonDeserializationArgs args)
         {
-            context.Reader.ReadStartDocument();
             var value = context.Reader.ReadInt32();
-            context.Reader.ReadEndDocument();
             return new Rating(value);
         }
     }

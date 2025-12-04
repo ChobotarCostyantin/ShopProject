@@ -20,6 +20,7 @@ namespace SocialAndReviews.Domain.Entities
 
             Nickname = nickname;
             ReputationScore = 0;
+            CreatedAt = DateTime.UtcNow;
         }
 
         public void UpdateNickname(string newNickname)

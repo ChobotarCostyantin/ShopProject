@@ -13,25 +13,21 @@ namespace SocialAndReviews.Application.Reviews.Mappers
     {
         public ReviewProfile()
         {
-            CreateMap<Review, ReviewDto>()
-                .ForCtorParam(nameof(ReviewDto.AuthorId), opt =>
-                    opt.MapFrom(src => src.Author.UserId))
-                .ForCtorParam(nameof(ReviewDto.AuthorName), opt =>
-                    opt.MapFrom(src => src.Author.Nickname))
-                .ForCtorParam(nameof(ReviewDto.Rating), opt =>
-                    opt.MapFrom(src => src.Rating.Value))
-                .ForCtorParam(nameof(ReviewDto.Comments), opt =>
-                    opt.MapFrom(src => src.Comments));
+            // Мапінг для автора
+            CreateMap<AuthorSnapshot, AuthorDto>()
+                .ConstructUsing(src => new AuthorDto(src.UserId, src.Nickname));
 
+            // Мапінг для Review
+            CreateMap<Review, ReviewDto>()
+                .ForMember(dest => dest.Author, opt => opt.MapFrom(src => src.Author))
+                .ForCtorParam(nameof(ReviewDto.Rating), opt => opt.MapFrom(src => src.Rating.Value))
+                .ForCtorParam(nameof(ReviewDto.Comments), opt => opt.MapFrom(src => src.Comments));
+
+            // Мапінг для Comment
             CreateMap<Comment, CommentDto>()
-                .ForCtorParam(nameof(CommentDto.CommentId), opt =>
-                    opt.MapFrom(src => src.CommentId))
-                .ForCtorParam(nameof(CommentDto.AuthorName), opt =>
-                    opt.MapFrom(src => src.Author.Nickname))
-                .ForCtorParam(nameof(CommentDto.AuthorId), opt =>
-                    opt.MapFrom(src => src.Author.UserId))
-                .ForCtorParam(nameof(CommentDto.CreatedAt), opt =>
-                    opt.MapFrom(src => src.CreatedAt));
+                .ForMember(dest => dest.Author, opt => opt.MapFrom(src => src.Author))
+                .ForCtorParam(nameof(CommentDto.CommentId), opt => opt.MapFrom(src => src.CommentId))
+                .ForCtorParam(nameof(CommentDto.CreatedAt), opt => opt.MapFrom(src => src.CreatedAt));
         }
     }
 }

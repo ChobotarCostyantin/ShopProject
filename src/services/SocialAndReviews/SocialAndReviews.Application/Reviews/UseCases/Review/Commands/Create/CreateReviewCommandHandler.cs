@@ -34,7 +34,7 @@ namespace SocialAndReviews.Application.Reviews.UseCases.Review.Commands.Create
 
         public async Task<Result<ReviewDto>> Handle(CreateReviewCommand command, CancellationToken cancellationToken)
         {
-            var validationResult = _createReviewCommandValidator.Validate(command);
+            var validationResult = await _createReviewCommandValidator.ValidateAsync(command);
             if (!validationResult.IsValid)
             {
                 return Result<ReviewDto>.BadRequest(validationResult.Errors[0].ErrorMessage);

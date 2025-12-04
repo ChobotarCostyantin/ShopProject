@@ -22,17 +22,17 @@ namespace SocialAndReviews.Infrastructure
                 .ValidateOnStart();
 
             // 2. Реєстрація MongoClient (Singleton, бо він thread-safe і має connection pooling)
-            services.AddSingleton<IMongoClient>(sp =>
-            {
-                var options = sp.GetRequiredService<IOptions<MongoOptions>>().Value;
+            // services.AddSingleton<IMongoClient>(sp =>
+            // {
+            //     var options = sp.GetRequiredService<IOptions<MongoOptions>>().Value;
                 
-                var settings = MongoClientSettings.FromConnectionString(options.ConnectionString);
-                settings.MinConnectionPoolSize = options.MinPoolSize;
-                settings.MaxConnectionPoolSize = options.MaxPoolSize;
-                settings.ConnectTimeout = TimeSpan.FromSeconds(options.ConnectionTimeoutSeconds);
+            //     var settings = MongoClientSettings.FromConnectionString(options.ConnectionString);
+            //     settings.MinConnectionPoolSize = options.MinPoolSize;
+            //     settings.MaxConnectionPoolSize = options.MaxPoolSize;
+            //     settings.ConnectTimeout = TimeSpan.FromSeconds(options.ConnectionTimeoutSeconds);
 
-                return new MongoClient(settings);
-            });
+            //     return new MongoClient(settings);
+            // });
 
             services.AddScoped<SocialAndReviewsDbContext>();
 

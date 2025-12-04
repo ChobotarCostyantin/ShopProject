@@ -8,6 +8,8 @@ namespace SocialAndReviews.Application.UserProfiles.DTOs.Responces
     public record UserProfileDto(
         Guid Id,
         string Nickname,
-        int ReputationScore
+        int ReputationScore,
+        DateTime CreatedAt,
+        DateTime UpdatedAt
     );
 }

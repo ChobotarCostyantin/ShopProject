@@ -8,11 +8,11 @@ namespace SocialAndReviews.Application.Reviews.DTOs.Responces
     public record ReviewDto(
         Guid Id,
         Guid ProductId,
-        Guid AuthorId,
-        string AuthorName,
+        AuthorDto Author,
         int Rating,
         string Text,
         DateTime CreatedAt,
+        DateTime UpdatedAt,
         CommentDto[] Comments
     );
 }

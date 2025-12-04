@@ -25,9 +25,9 @@ namespace SocialAndReviews.Infrastructure.Repositories
             var totalCount = CountAllAsync(_ => true, cancellationToken).Result;
 
             return PaginationResult<Review>.Create(
-                entities.ToArray(), 
-                totalCount, 
-                pageNumber, 
+                entities.ToArray(),
+                totalCount,
+                pageNumber,
                 pageSize);
         }
 
@@ -43,16 +43,15 @@ namespace SocialAndReviews.Infrastructure.Repositories
             var totalCount = await CountAllAsync(_ => true, cancellationToken);
 
             return PaginationResult<Review>.Create(
-                entities.ToArray(), 
-                totalCount, 
-                pageNumber, 
+                entities.ToArray(),
+                totalCount,
+                pageNumber,
                 pageSize);
         }
 
         public async Task<IEnumerable<Review>> SearchByTextAsync(string searchText, int limit, CancellationToken cancellationToken)
         {
-            return await _collection.Aggregate()
-                .Match(Builders<Review>.Filter.Text(searchText))
+            return await _collection.Find(Builders<Review>.Filter.Text(searchText))
                 .Sort(Builders<Review>.Sort.MetaTextScore("textScore"))
                 .Limit(limit)
                 .ToListAsync(cancellationToken);

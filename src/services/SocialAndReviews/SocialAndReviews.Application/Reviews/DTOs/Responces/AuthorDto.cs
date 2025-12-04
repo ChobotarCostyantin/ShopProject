@@ -5,10 +5,8 @@ using System.Threading.Tasks;
 
 namespace SocialAndReviews.Application.Reviews.DTOs.Responces
 {
-    public record CommentDto(
-        Guid CommentId,
-        string Text,
-        AuthorDto Author,
-        DateTime CreatedAt
+    public record AuthorDto(
+        Guid Id,
+        string Nickname
     );
 }

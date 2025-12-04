@@ -6,7 +6,9 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using MongoDB.Driver;
 using Shared.Exceptions;
+using SocialAndReviews.Domain.Exceptions;
 
 namespace Shared.ErrorHandling;
 
@@ -30,6 +32,7 @@ public class GlobalExceptionHandler : IExceptionHandler
             "Unhandled exception occurred. Path: {RequestPath}, CorrelationId: {CorrelationId}",
             httpContext.Request.Path,
             httpContext.Items["X-Correlation-Id"]);
+        
         var problemDetails = CreateProblemDetails(exception, httpContext);
 
         httpContext.Response.ContentType = "application/json";
@@ -59,7 +62,7 @@ public class GlobalExceptionHandler : IExceptionHandler
                 Instance = context.Request.Path
             },
 
-            // 409: Conflict (Явний ConflictException або порушення унікальності)
+            // 409: Conflict (Загальні конфлікти)
             ConflictException conflictEx => new ProblemDetails
             {
                 Type = "https://httpstatuses.com/409",
@@ -68,23 +71,55 @@ public class GlobalExceptionHandler : IExceptionHandler
                 Status = (int)HttpStatusCode.Conflict,
                 Instance = context.Request.Path
             },
-            // Розширення логіки для DatabaseConstraintException (наприклад, duplicate key)
-            DatabaseConstraintException dbEx => new ProblemDetails
+
+            // 409: Conflict (MongoDB Duplicate Key)
+            // Код помилки 11000 в MongoDB означає Duplicate Key Error
+            MongoWriteException mongoWriteEx when mongoWriteEx.WriteError.Category == ServerErrorCategory.DuplicateKey => new ProblemDetails
             {
-                Type = "https://httpstatuses.com/409", // Змінюємо на 409 або залишаємо 400 залежно від бізнес-правил
-                Title = "Database constraint violation",
-                Detail = dbEx.Message,
-                Status = (int)HttpStatusCode.Conflict, // Часто краще Conflict для унікальних індексів
+                Type = "https://httpstatuses.com/409",
+                Title = "Duplicate key conflict",
+                Detail = "A record with the same unique key already exists.",
+                Status = (int)HttpStatusCode.Conflict,
                 Instance = context.Request.Path
             },
 
-            // 503: Service Unavailable
-            DatabaseUnavailableException dbEx => new ProblemDetails
+            // 400: Bad Request (MongoDB Write Error - інші помилки запису, наприклад валідація схеми)
+            MongoWriteException mongoWriteEx => new ProblemDetails
+            {
+                Type = "https://httpstatuses.com/400",
+                Title = "Database write error",
+                Detail = _env.IsDevelopment() ? mongoWriteEx.Message : "Failed to write data to the database due to validation rules.",
+                Status = (int)HttpStatusCode.BadRequest,
+                Instance = context.Request.Path
+            },
+
+            // 503: Service Unavailable (MongoDB Connection Issues)
+            MongoConnectionException => new ProblemDetails
             {
                 Type = "https://httpstatuses.com/503",
-                Title = "Database unavailable",
-                Detail = "The service is currently unavailable. Please try again later.", // Безпечніше для продакшену
+                Title = "Service Unavailable",
+                Detail = "Database connection is currently unavailable.",
                 Status = (int)HttpStatusCode.ServiceUnavailable,
+                Instance = context.Request.Path
+            },
+            
+            // 503: Service Unavailable (Timeouts)
+            TimeoutException => new ProblemDetails
+            {
+                Type = "https://httpstatuses.com/503",
+                Title = "Service Timeout",
+                Detail = " The operation timed out.",
+                Status = (int)HttpStatusCode.ServiceUnavailable,
+                Instance = context.Request.Path
+            },
+
+            // 400: Bad Request (Domain Logic Violations)
+            DomainException domainEx => new ProblemDetails
+            {
+                Type = "https://httpstatuses.com/400",
+                Title = "Domain validation failed",
+                Detail = domainEx.Message,
+                Status = (int)HttpStatusCode.BadRequest,
                 Instance = context.Request.Path
             },
 
@@ -104,13 +139,13 @@ public class GlobalExceptionHandler : IExceptionHandler
                 Instance = context.Request.Path
             },
 
-            // 500: Infrastructure (Всі інші помилки інфраструктури)
-            InfrastructureException infraEx => new ProblemDetails
+            // 503: Database Unavailable (Загальна інфраструктура)
+            DatabaseUnavailableException => new ProblemDetails
             {
-                Type = "https://httpstatuses.com/500",
-                Title = "Internal Server Error",
-                Detail = "An internal error occurred.", // Приховуємо деталі в проді
-                Status = (int)HttpStatusCode.InternalServerError,
+                Type = "https://httpstatuses.com/503",
+                Title = "Database unavailable",
+                Detail = "The service is currently unavailable. Please try again later.",
+                Status = (int)HttpStatusCode.ServiceUnavailable,
                 Instance = context.Request.Path
             },
 

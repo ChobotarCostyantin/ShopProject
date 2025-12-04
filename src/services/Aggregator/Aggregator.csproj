@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+    <PropertyGroup>
+        <TargetFramework>net9.0</TargetFramework>
+        <Nullable>enable</Nullable>
+        <ImplicitUsings>enable</ImplicitUsings>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="../Orders/Orders.BLL/Orders.BLL.csproj" />
+        <ProjectReference Include="../Catalog/Catalog.BLL/Catalog.BLL.csproj" />
+        <ProjectReference Include="../SocialAndReviews/SocialAndReviews.Application/SocialAndReviews.Application.csproj" />
+        <ProjectReference Include="../ServiceDefaults/ServiceDefaults.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="AspNetCore.HealthChecks.Uris" Version="9.0.0" />
+    </ItemGroup>
+
+</Project>

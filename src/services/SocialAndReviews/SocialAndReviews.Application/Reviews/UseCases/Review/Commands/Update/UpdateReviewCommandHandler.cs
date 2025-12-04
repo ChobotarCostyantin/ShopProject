@@ -32,7 +32,7 @@ namespace SocialAndReviews.Application.Reviews.UseCases.Review.Commands.Update
 
         public async Task<Result<ReviewDto>> Handle(UpdateReviewCommand command, CancellationToken cancellationToken)
         {
-            var validationResult = _updateReviewCommandValidator.Validate(command);
+            var validationResult = await _updateReviewCommandValidator.ValidateAsync(command);
             if (!validationResult.IsValid)
             {
                 return Result<ReviewDto>.BadRequest(validationResult.Errors[0].ErrorMessage);

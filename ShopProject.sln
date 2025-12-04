@@ -45,6 +45,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SocialAndReviews.Infrastruc
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SocialAndReviews.API", "src\services\SocialAndReviews\SocialAndReviews.API\SocialAndReviews.API.csproj", "{7571203B-76F8-4CCC-AF6A-CBD4AEF2EF11}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Aggregator", "src\services\Aggregator\Aggregator.csproj", "{D26C698F-1A8C-4C2C-B36E-C19A444A644F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -235,6 +237,18 @@ Global
 		{7571203B-76F8-4CCC-AF6A-CBD4AEF2EF11}.Release|x64.Build.0 = Release|Any CPU
 		{7571203B-76F8-4CCC-AF6A-CBD4AEF2EF11}.Release|x86.ActiveCfg = Release|Any CPU
 		{7571203B-76F8-4CCC-AF6A-CBD4AEF2EF11}.Release|x86.Build.0 = Release|Any CPU
+		{D26C698F-1A8C-4C2C-B36E-C19A444A644F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D26C698F-1A8C-4C2C-B36E-C19A444A644F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D26C698F-1A8C-4C2C-B36E-C19A444A644F}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{D26C698F-1A8C-4C2C-B36E-C19A444A644F}.Debug|x64.Build.0 = Debug|Any CPU
+		{D26C698F-1A8C-4C2C-B36E-C19A444A644F}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{D26C698F-1A8C-4C2C-B36E-C19A444A644F}.Debug|x86.Build.0 = Debug|Any CPU
+		{D26C698F-1A8C-4C2C-B36E-C19A444A644F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D26C698F-1A8C-4C2C-B36E-C19A444A644F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D26C698F-1A8C-4C2C-B36E-C19A444A644F}.Release|x64.ActiveCfg = Release|Any CPU
+		{D26C698F-1A8C-4C2C-B36E-C19A444A644F}.Release|x64.Build.0 = Release|Any CPU
+		{D26C698F-1A8C-4C2C-B36E-C19A444A644F}.Release|x86.ActiveCfg = Release|Any CPU
+		{D26C698F-1A8C-4C2C-B36E-C19A444A644F}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -260,5 +274,6 @@ Global
 		{0CFE4A11-15B4-43C5-B0DC-1C676FE95866} = {3CB1931C-E896-F64E-82ED-849AD76679BE}
 		{E68BD14E-7A9D-4514-9CD2-95C24664360F} = {3CB1931C-E896-F64E-82ED-849AD76679BE}
 		{7571203B-76F8-4CCC-AF6A-CBD4AEF2EF11} = {3CB1931C-E896-F64E-82ED-849AD76679BE}
+		{D26C698F-1A8C-4C2C-B36E-C19A444A644F} = {BF8ED88A-46EF-4712-A03A-DE8BB91E641F}
 	EndGlobalSection
 EndGlobal

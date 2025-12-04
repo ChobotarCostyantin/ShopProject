@@ -32,7 +32,7 @@ namespace SocialAndReviews.Application.UserProfiles.UseCases.Commands.Create
 
         public async Task<Result<UserProfileDto>> Handle(CreateUserProfileCommand command, CancellationToken cancellationToken)
         {
-            var validationResult = _createUserProfileCommandValidator.Validate(command);
+            var validationResult = await _createUserProfileCommandValidator.ValidateAsync(command);
             if (!validationResult.IsValid)
             {
                 return Result<UserProfileDto>.BadRequest(validationResult.Errors[0].ErrorMessage);

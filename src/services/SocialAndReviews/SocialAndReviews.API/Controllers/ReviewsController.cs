@@ -1,8 +1,11 @@
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Shared.DTOs;
+using SocialAndReviews.Application.Reviews.DTOs.Requests.Comment;
 using SocialAndReviews.Application.Reviews.DTOs.Requests.Review;
 using SocialAndReviews.Application.Reviews.DTOs.Responces;
+using SocialAndReviews.Application.Reviews.UseCases.Comment.Commands.Create;
+using SocialAndReviews.Application.Reviews.UseCases.Comment.Commands.Delete;
 using SocialAndReviews.Application.Reviews.UseCases.Review.Commands.Create;
 using SocialAndReviews.Application.Reviews.UseCases.Review.Commands.Delete;
 using SocialAndReviews.Application.Reviews.UseCases.Review.Commands.Update;
@@ -68,6 +71,22 @@ namespace SocialAndReviews.API.Controllers
         public async Task<IActionResult> DeleteAsync(Guid id, CancellationToken cancellationToken)
         {
             return (await _sender.Send(new DeleteReviewCommand(id), cancellationToken)).ToApiResponse();
+        }
+
+        [HttpPost("{reviewId:guid}/comments")]
+        [ProducesResponseType(typeof(CommentDto), StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> PostCommentAsync(Guid reviewId, CreateCommentRequest request, CancellationToken cancellationToken)
+        {
+            return (await _sender.Send(new CreateCommentCommand(reviewId, request), cancellationToken)).ToApiResponse();
+        }
+
+        [HttpDelete("{reviewId:guid}/comments/{commentId:guid}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> DeleteCommentAsync(Guid reviewId, Guid commentId, CancellationToken cancellationToken)
+        {
+            return (await _sender.Send(new DeleteCommentCommand(reviewId, commentId), cancellationToken)).ToApiResponse();
         }
     }
 }

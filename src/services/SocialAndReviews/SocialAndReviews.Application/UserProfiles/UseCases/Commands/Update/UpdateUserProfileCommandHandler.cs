@@ -31,7 +31,7 @@ namespace SocialAndReviews.Application.UserProfiles.UseCases.Commands.Update
 
         public async Task<Result<UserProfileDto>> Handle(UpdateUserProfileCommand command, CancellationToken cancellationToken)
         {
-            var validationResult = _updateUserProfileCommandValidator.Validate(command);
+            var validationResult = await _updateUserProfileCommandValidator.ValidateAsync(command);
             if (!validationResult.IsValid)
             {
                 return Result<UserProfileDto>.BadRequest(validationResult.Errors[0].ErrorMessage);

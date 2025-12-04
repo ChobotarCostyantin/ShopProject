@@ -16,10 +16,19 @@ namespace SocialAndReviews.Infrastructure.Serializers
         public override void Serialize(BsonSerializationContext context, BsonSerializationArgs args, Comment value)
         {
             context.Writer.WriteStartDocument();
+
+            context.Writer.WriteName("CommentId");
             context.Writer.WriteGuid(value.CommentId);
+
+            context.Writer.WriteName("Text");
             context.Writer.WriteString(value.Text);
+
+            context.Writer.WriteName("Author");
             BsonSerializer.Serialize(context.Writer, value.Author);
+
+            context.Writer.WriteName("CreatedAt");
             context.Writer.WriteDateTime(value.CreatedAt.Ticks);
+            
             context.Writer.WriteEndDocument();
         }
 

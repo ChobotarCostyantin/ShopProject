@@ -46,8 +46,13 @@ namespace SocialAndReviews.Infrastructure.Serializers
         public override void Serialize(BsonSerializationContext context, BsonSerializationArgs args, AuthorSnapshot value)
         {
             context.Writer.WriteStartDocument();
+
+            context.Writer.WriteName("UserId"); 
             BsonSerializer.LookupSerializer<Guid>().Serialize(context, args, value.UserId);
+
+            context.Writer.WriteName("Nickname");
             context.Writer.WriteString(value.Nickname);
+            
             context.Writer.WriteEndDocument();
         }
     }
