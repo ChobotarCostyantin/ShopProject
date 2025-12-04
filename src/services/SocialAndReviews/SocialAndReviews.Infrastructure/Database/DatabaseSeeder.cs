@@ -41,9 +41,9 @@ namespace SocialAndReviews.Infrastructure.Database
 
             var users = new List<UserProfile>
             {
-                new UserProfile(Guid.Parse("11111111-1111-1111-1111-111111111111"), "AlexReviewer"),
-                new UserProfile(Guid.Parse("22222222-2222-2222-2222-222222222222"), "MariaCritic"),
-                new UserProfile(Guid.Parse("33333333-3333-3333-3333-333333333333"), "TechGuru")
+                new UserProfile("AlexReviewer"),
+                new UserProfile("MariaCritic"),
+                new UserProfile("TechGuru")
             };
 
             // Використання BulkWrite для ефективності

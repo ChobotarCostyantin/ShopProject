@@ -50,11 +50,6 @@ namespace SocialAndReviews.Infrastructure.Services
             var profileBuilder = Builders<UserProfile>.IndexKeys;
             var profileIndexes = new List<CreateIndexModel<UserProfile>>
             {
-                // Unique indexes
-                new CreateIndexModel<UserProfile>(
-                    profileBuilder.Ascending(u => u.UserId),
-                    new CreateIndexOptions { Unique = true, Name = "UserId_Unique" }
-                ),
                 new CreateIndexModel<UserProfile>(
                     profileBuilder.Ascending(u => u.Nickname),
                     new CreateIndexOptions { Unique = true, Name = "Nickname_Unique" }

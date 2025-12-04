@@ -11,11 +11,12 @@
     <ItemGroup>
         <ProjectReference Include="..\Orders\Orders.API\Orders.API.csproj" />
         <ProjectReference Include="..\Catalog\Catalog.API\Catalog.API.csproj" />
+        <ProjectReference Include="..\SocialAndReviews\SocialAndReviews.API\SocialAndReviews.API.csproj" />
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="Aspire.Hosting.MongoDB" Version="13.0.0" />
-        <PackageReference Include="Aspire.Hosting.PostgreSQL" Version="13.0.0" />
+        <PackageReference Include="Aspire.Hosting.MongoDB" Version="13.0.1" />
+        <PackageReference Include="Aspire.Hosting.PostgreSQL" Version="13.0.1" />
     </ItemGroup>
 
 </Project>

@@ -168,6 +168,15 @@ namespace Catalog.BLL.Services.Implementations
         {
             _logger.LogInformation("Adding tag to product with ID: {ProductId}.", productId);
 
+            var validationResult = await _addTagToProductRequestValidator.ValidateAsync(request, cancellationToken);
+            if (!validationResult.IsValid)
+            {
+                _logger.LogWarning("Validation failed for adding tag to product: {Error}",
+                    validationResult.Errors[0].ErrorMessage);
+
+                return Result<bool>.BadRequest(validationResult.Errors[0].ErrorMessage);
+            }
+
             var product = await _unitOfWork.ProductRepository.GetByIdAsync(productId, cancellationToken);
             if (product == null)
             {
@@ -212,6 +221,15 @@ namespace Catalog.BLL.Services.Implementations
         public async Task<Result<bool>> RemoveTagFromProductAsync(Guid productId, RemoveTagFromProductRequest request, CancellationToken cancellationToken)
         {
             _logger.LogInformation("Attempting to remove tag from product with ID: {ProductId}.", productId);
+
+            var validationResult = await _removeTagFromProductRequestValidator.ValidateAsync(request, cancellationToken);
+            if (!validationResult.IsValid)
+            {
+                _logger.LogWarning("Validation failed for removing tag from product: {Error}",
+                    validationResult.Errors[0].ErrorMessage);
+
+                return Result<bool>.BadRequest(validationResult.Errors[0].ErrorMessage);
+            }
 
             var product = await _unitOfWork.ProductRepository.GetByIdAsync(productId, cancellationToken);
             if (product == null)

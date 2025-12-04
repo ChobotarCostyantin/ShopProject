@@ -11,17 +11,17 @@ namespace SocialAndReviews.Infrastructure.Repositories
     {
         private readonly SocialAndReviewsDbContext _context;
 
-        public IReviewRepository Reviews { get; }
-        public IUserProfileRepository UserProfiles { get; }
+        public IReviewRepository ReviewRepository { get; }
+        public IUserProfileRepository UserProfileRepository { get; }
 
-        public UnitOfWork(SocialAndReviewsDbContext context, IReviewRepository reviews, IUserProfileRepository userProfiles)
+        public UnitOfWork(SocialAndReviewsDbContext context, IReviewRepository reviewRepository, IUserProfileRepository userProfileRepository)
         {
             _context = context;
-            Reviews = reviews;
-            UserProfiles = userProfiles;
+            ReviewRepository = reviewRepository;
+            UserProfileRepository = userProfileRepository;
         }
 
-        public async Task<bool> SaveChangesAsync(CancellationToken cancellationToken = default)
+        public async Task<bool> SaveChangesAsync(CancellationToken cancellationToken)
         {
             if (_context.Session != null && _context.Session.IsInTransaction)
             {

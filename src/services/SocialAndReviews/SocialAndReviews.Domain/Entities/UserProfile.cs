@@ -8,18 +8,16 @@ using SocialAndReviews.Domain.Exceptions;
 
 namespace SocialAndReviews.Domain.Entities
 {
+    [BsonIgnoreExtraElements]
     public class UserProfile : BaseEntity
     {
-        public Guid UserId { get; private set; }
         public string Nickname { get; private set; }
         public int ReputationScore { get; private set; }
 
-        public UserProfile(Guid userId, string nickname)
+        public UserProfile(string nickname)
         {
-            if (userId == Guid.Empty) throw new DomainException("User ID is required.");
             if (string.IsNullOrWhiteSpace(nickname)) throw new DomainException("Nickname is required.");
 
-            UserId = userId;
             Nickname = nickname;
             ReputationScore = 0;
         }
@@ -31,11 +29,10 @@ namespace SocialAndReviews.Domain.Entities
             UpdateTimestamp();
         }
 
-        public void IncreaseReputation(int points)
+        public void UpdateReputationScore(int newReputationScore)
         {
-            if (points <= 0) throw new DomainException("Points must be positive.");
-
-            ReputationScore += points;
+            if (newReputationScore < 0) throw new DomainException("Reputation score cannot be negative.");
+            ReputationScore = newReputationScore;
             UpdateTimestamp();
         }
     }

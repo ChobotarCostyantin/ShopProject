@@ -5,7 +5,7 @@ namespace Orders.API.Controllers
 {
     [ApiController]
     [Produces(MediaTypeNames.Application.Json)]
-    public class BaseApiController : ControllerBase
+    public abstract class BaseApiController : ControllerBase
     {
         
     }

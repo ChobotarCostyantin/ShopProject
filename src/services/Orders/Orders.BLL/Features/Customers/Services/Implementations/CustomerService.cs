@@ -20,26 +20,20 @@ namespace Orders.BLL.Features.Customers.Services.Implementations
         private readonly IMapper _mapper;
 
         private readonly IValidator<CreateCustomerRequest> _createCustomerRequestValidator;
-        private readonly IValidator<GetCustomerByIdRequest> _getCustomerByIdRequestValidator;
         private readonly IValidator<UpdateCustomerRequest> _updateCustomerRequestValidator;
-        private readonly IValidator<DeleteCustomerRequest> _deleteCustomerRequestValidator;
         public CustomerService(
             IUnitOfWork unitOfWork,
             ILogger<CustomerService> logger,
             IMapper mapper,
             IValidator<CreateCustomerRequest> createCustomerRequestValidator,
-            IValidator<GetCustomerByIdRequest> getCustomerByIdRequestValidator,
-            IValidator<UpdateCustomerRequest> updateCustomerRequestValidator,
-            IValidator<DeleteCustomerRequest> deleteCustomerRequestValidator
+            IValidator<UpdateCustomerRequest> updateCustomerRequestValidator
             )
         {
             _unitOfWork = unitOfWork;
             _logger = logger;
             _mapper = mapper;
             _createCustomerRequestValidator = createCustomerRequestValidator;
-            _getCustomerByIdRequestValidator = getCustomerByIdRequestValidator;
             _updateCustomerRequestValidator = updateCustomerRequestValidator;
-            _deleteCustomerRequestValidator = deleteCustomerRequestValidator;
         }
 
         public async Task<Result<CustomerDto>> CreateCustomerAsync(CreateCustomerRequest request, CancellationToken cancellationToken)
@@ -150,12 +144,6 @@ namespace Orders.BLL.Features.Customers.Services.Implementations
                     await _unitOfWork.CommitTransactionAsync();
                     return Result<bool>.NotFound(key: request.CustomerId, entityName: nameof(Customer));
                 }
-
-                // var validationResult = await _deleteCustomerRequestValidator.ValidateAsync(request, cancellationToken);
-                // if (!validationResult.IsValid)
-                // {
-                //     return Result<bool>.BadRequest(validationResult.Errors[0].ErrorMessage);
-                // }
 
                 await _unitOfWork.CustomerRepository.DeleteCustomerAsync(request.CustomerId, cancellationToken);
 

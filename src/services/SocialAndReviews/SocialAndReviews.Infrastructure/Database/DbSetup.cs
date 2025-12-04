@@ -72,7 +72,7 @@ namespace SocialAndReviews.Infrastructure.Database
                 BsonClassMap.RegisterClassMap<UserProfile>(cm =>
                 {
                     cm.AutoMap();
-                    cm.MapCreator(u => new UserProfile(u.UserId, u.Nickname));
+                    cm.MapCreator(u => new UserProfile(u.Nickname));
                 });
             }
         }

@@ -9,7 +9,7 @@ namespace Catalog.API.Controllers
 {
     [ApiController]
     [Produces(MediaTypeNames.Application.Json)]
-    public class BaseApiController
+    public abstract class BaseApiController
     {
         
     }

@@ -1,4 +1,4 @@
-
+﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31903.59
@@ -42,6 +42,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SocialAndReviews.Application", "src\services\SocialAndReviews\SocialAndReviews.Application\SocialAndReviews.Application.csproj", "{0CFE4A11-15B4-43C5-B0DC-1C676FE95866}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SocialAndReviews.Infrastructure", "src\services\SocialAndReviews\SocialAndReviews.Infrastructure\SocialAndReviews.Infrastructure.csproj", "{E68BD14E-7A9D-4514-9CD2-95C24664360F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SocialAndReviews.API", "src\services\SocialAndReviews\SocialAndReviews.API\SocialAndReviews.API.csproj", "{7571203B-76F8-4CCC-AF6A-CBD4AEF2EF11}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -221,6 +223,18 @@ Global
 		{E68BD14E-7A9D-4514-9CD2-95C24664360F}.Release|x64.Build.0 = Release|Any CPU
 		{E68BD14E-7A9D-4514-9CD2-95C24664360F}.Release|x86.ActiveCfg = Release|Any CPU
 		{E68BD14E-7A9D-4514-9CD2-95C24664360F}.Release|x86.Build.0 = Release|Any CPU
+		{7571203B-76F8-4CCC-AF6A-CBD4AEF2EF11}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7571203B-76F8-4CCC-AF6A-CBD4AEF2EF11}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7571203B-76F8-4CCC-AF6A-CBD4AEF2EF11}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{7571203B-76F8-4CCC-AF6A-CBD4AEF2EF11}.Debug|x64.Build.0 = Debug|Any CPU
+		{7571203B-76F8-4CCC-AF6A-CBD4AEF2EF11}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{7571203B-76F8-4CCC-AF6A-CBD4AEF2EF11}.Debug|x86.Build.0 = Debug|Any CPU
+		{7571203B-76F8-4CCC-AF6A-CBD4AEF2EF11}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7571203B-76F8-4CCC-AF6A-CBD4AEF2EF11}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7571203B-76F8-4CCC-AF6A-CBD4AEF2EF11}.Release|x64.ActiveCfg = Release|Any CPU
+		{7571203B-76F8-4CCC-AF6A-CBD4AEF2EF11}.Release|x64.Build.0 = Release|Any CPU
+		{7571203B-76F8-4CCC-AF6A-CBD4AEF2EF11}.Release|x86.ActiveCfg = Release|Any CPU
+		{7571203B-76F8-4CCC-AF6A-CBD4AEF2EF11}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -245,5 +259,6 @@ Global
 		{4E810894-3D47-4705-ABD4-086256AF74BA} = {3CB1931C-E896-F64E-82ED-849AD76679BE}
 		{0CFE4A11-15B4-43C5-B0DC-1C676FE95866} = {3CB1931C-E896-F64E-82ED-849AD76679BE}
 		{E68BD14E-7A9D-4514-9CD2-95C24664360F} = {3CB1931C-E896-F64E-82ED-849AD76679BE}
+		{7571203B-76F8-4CCC-AF6A-CBD4AEF2EF11} = {3CB1931C-E896-F64E-82ED-849AD76679BE}
 	EndGlobalSection
 EndGlobal

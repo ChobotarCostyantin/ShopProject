@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+    <PropertyGroup>
+        <TargetFramework>net9.0</TargetFramework>
+        <Nullable>enable</Nullable>
+        <ImplicitUsings>enable</ImplicitUsings>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\..\ServiceDefaults\ServiceDefaults.csproj" />
+        <ProjectReference Include="..\SocialAndReviews.Application\SocialAndReviews.Application.csproj" />
+        <ProjectReference Include="..\SocialAndReviews.Infrastructure\SocialAndReviews.Infrastructure.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Swashbuckle.AspNetCore" Version="10.0.1" />
+        <PackageReference Include="Aspire.MongoDB.Driver" Version="13.0.1" />
+        <PackageReference Include="AspNetCore.HealthChecks.Redis" Version="9.0.0" />
+        <PackageReference Include="AspNetCore.HealthChecks.MongoDb" Version="9.0.0" />
+    </ItemGroup>
+
+</Project>

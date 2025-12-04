@@ -9,6 +9,7 @@ using SocialAndReviews.Domain.ValueObjects;
 
 namespace SocialAndReviews.Domain.Entities
 {
+    [BsonIgnoreExtraElements]
     public class Review : BaseEntity
     {
         public Guid ProductId { get; private set; }
@@ -21,12 +22,11 @@ namespace SocialAndReviews.Domain.Entities
         public Review(Guid productId, AuthorSnapshot author, Rating rating, string text)
         {
             if (productId == Guid.Empty) throw new DomainException("Product ID is required.");
-            if (string.IsNullOrWhiteSpace(text)) throw new DomainException("Review text cannot be empty.");
 
             ProductId = productId;
             Author = author ?? throw new DomainException("Author is required.");
             Rating = rating ?? throw new DomainException("Rating is required.");
-            Text = text;
+            Text = text ?? throw new DomainException("Review text cannot be empty.");
         }
 
         public void UpdateText(string newText)
@@ -52,7 +52,7 @@ namespace SocialAndReviews.Domain.Entities
 
         public void RemoveComment(Guid commentId)
         {
-            var comment = _comments.FirstOrDefault(c => c.CommentId == commentId) 
+            var comment = _comments.FirstOrDefault(c => c.CommentId == commentId)
                 ?? throw new DomainException("Comment not found.");
             _comments.Remove(comment);
             UpdateTimestamp();

@@ -20,4 +20,13 @@ var catalogApi = builder.AddProject<Projects.Catalog_API>("catalog-api")
     .WithHttpEndpoint(port: 5002, name: "catalog-http")
     .WaitFor(catalogDb);
 
+var socialAndReviewsDb = builder.AddMongoDB("social-and-reviews-db")
+    .WithDataVolume()
+    .AddDatabase("socialAndReviewsDb");
+
+var socialAndReviewsApi = builder.AddProject<Projects.SocialAndReviews_API>("social-and-reviews-api")
+    .WithReference(socialAndReviewsDb)
+    .WithHttpEndpoint(port: 5003, name: "social-and-reviews-http")
+    .WaitFor(socialAndReviewsDb);
+
 builder.Build().Run();

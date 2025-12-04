@@ -13,11 +13,11 @@ namespace SocialAndReviews.Infrastructure
 {
     public static class DependencyInjection
     {
-        public static IServiceCollection ConfigureInfrastructure(this IServiceCollection services, IConfiguration configuration)
+        public static IServiceCollection ConfigureInfrastructure(this IServiceCollection services)
         {
             // 1. Налаштування конфігурації (MongoOptions)
             services.AddOptions<MongoOptions>()
-                .Bind(configuration.GetSection(MongoOptions.ConfigurationKey))
+                .BindConfiguration(MongoOptions.ConfigurationKey)
                 .ValidateDataAnnotations()
                 .ValidateOnStart();
 

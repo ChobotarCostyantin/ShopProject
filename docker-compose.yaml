@@ -41,6 +41,28 @@ services:
     volumes:
       - catalog-db.volume:/var/lib/postgresql
 
+  social.and.reviews.db:
+    image: mongo
+    container_name: social.and.reviews.db
+    restart: always
+    ports:
+      - "27017:27017"
+    volumes:
+      - social.and.reviews.db:/data/db
+
+  mongo-ui:
+    image: mongo-express
+    container_name: mongo-ui
+    restart: always
+    ports:
+      - "14999:8081"
+    environment:
+      - ME_CONFIG_MONGODB_URL=mongodb://social.and.reviews.db:27017/
+      - ME_CONFIG_BASICAUTH=false
+    depends_on:
+      - social.and.reviews.db
+
 volumes:
   orders-db.volume:
   catalog-db.volume:
+  social.and.reviews.db:

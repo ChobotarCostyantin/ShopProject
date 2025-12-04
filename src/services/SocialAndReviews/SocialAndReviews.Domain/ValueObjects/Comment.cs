@@ -17,19 +17,15 @@ namespace SocialAndReviews.Domain.ValueObjects
 
         public Comment(string text, AuthorSnapshot author)
         {
-            if (string.IsNullOrWhiteSpace(text)) throw new DomainException("Comment text cannot be empty.");
-
             CommentId = Guid.CreateVersion7();
-            Text = text;
+            Text = text ?? throw new DomainException("Comment text cannot be empty.");
             Author = author ?? throw new DomainException("Author is required.");
             CreatedAt = DateTime.UtcNow;
         }
         public Comment(Guid commentId, string text, AuthorSnapshot author, DateTime createdAt)
         {
-            if (string.IsNullOrWhiteSpace(text)) throw new DomainException("Comment text cannot be empty.");
-
             CommentId = commentId;
-            Text = text;
+            Text = text ?? throw new DomainException("Comment text cannot be empty.");
             Author = author ?? throw new DomainException("Author is required.");
             CreatedAt = createdAt;
         }

@@ -7,11 +7,11 @@ namespace SocialAndReviews.Domain.Interfaces.Repositories
 {
     public interface IUnitOfWork : IDisposable
 {
-    IReviewRepository Reviews { get; }
-    IUserProfileRepository UserProfiles { get; }
+    IReviewRepository ReviewRepository { get; }
+    IUserProfileRepository UserProfileRepository { get; }
 
     // Зберігає зміни. У контексті Mongo це може бути коміт транзакції 
     // або просто заглушка, якщо репозиторії зберігають дані миттєво.
-    Task<bool> SaveChangesAsync(CancellationToken cancellationToken = default);
+    Task<bool> SaveChangesAsync(CancellationToken cancellationToken);
 }
 }
